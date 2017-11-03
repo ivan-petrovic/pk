@@ -1,0 +1,24 @@
+IF ! File("poreznbb.ntx")
+   USE POREZN
+   INDEX ON BROJ TO POREZNBB
+   USE
+ENDIF
+
+SELECT 0
+USE POREZN INDEX POREZNBB,POREZNB,POREZND
+
+bkkal = Space(10)
+bktar = Space(8)
+bkkal = wdmpbro
+
+kljuc = bkkal
+SEEK kljuc
+IF Found()
+	DELETE
+	PACK
+ENDIF
+
+SELECT POREZN
+CLOSE POREZN
+
+RETURN

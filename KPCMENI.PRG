@@ -1,0 +1,36 @@
+*****************************************
+* Glavni meni za problematiku PDV-a
+*****************************************
+LOCAL Izbor, nPredhIzbor
+
+nPredhIzbor = 1
+DO WHILE .T.
+
+	MainWnd("PROBLEMATIKA PDV (PRENETI POREZ)")
+
+	Izbor = nPredhIzbor
+	@ 8,27  PROMPT " PRIHODI PDV                " MESSAGE "UNOS PRIHODA ZA PRODATU PDV ROBU"
+	@ 10,27 PROMPT " PAZARI I POREZ ZA PRODATO  " MESSAGE "UPITI STAMPA STAVKI PAZARA I OBRACUN POREZA"
+	@ 12,27 PROMPT " PROBLEMATIKA KNJIGE POREZA " MESSAGE "PROBLEMATIKA PDV POREZA (PRENETI POREZ)"
+	@ 14,27 PROMPT " PRERECUNATE PDV            " MESSAGE "PLACANJE POREZA PDV PRERACUNATIM STOPAMA"
+
+	CLEAR TYPEAHEAD
+	MENU TO Izbor
+	* nPredhIzbor = Izbor
+
+	DO CASE
+		CASE Lastkey() = 27
+			EXIT
+		CASE Izbor = 1
+			DO PRKPCMEN
+		CASE Izbor = 2
+			DO PAZARMEN
+		CASE Izbor = 3
+			DO POREZPIC
+		CASE Izbor = 4
+			DO PICPORMM
+	ENDCASE
+
+ENDDO
+
+RETURN

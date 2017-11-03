@@ -1,0 +1,40 @@
+*******************************************
+* Glavni meni za banke
+*******************************************
+LOCAL Izbp, nPredhIzbor
+
+nPredhIzbor = 1
+DO WHILE .T.
+
+	MainWnd("GLAVNI MENI ZA OBRADU BANAKA")
+
+	Izbp = nPredhIzbor
+	@ 6,27  PROMPT "  OTVARANJE BANKE        " MESSAGE "UNOS PODATAKA O NOVOJ BANCI"
+	@ 8,27  PROMPT "  LISTANJE BANAKA        " MESSAGE "LISTANJE SIFARA I NAZIVA BANAKA"
+	@ 10,27 PROMPT "  IZMENA PODATAKA        " MESSAGE "IZMENA PODATAKA O JEDNOJ BANCI"
+	@ 12,27 PROMPT "  UPIT U PODATKE         " MESSAGE "UPIT U PODATKE O JEDNOJ BANCI"
+	@ 14,27 PROMPT "  BRISANJE PODATAKA      " MESSAGE "BRISE MATICNE PODATKE O JEDNOJ BANCI"
+
+	CLEAR TYPEAHEAD
+	MENU TO Izbp
+	nPredhIzbor = Izbp
+
+	DO CASE
+		CASE Lastkey() = 27
+			EXIT
+		CASE Izbp = 1
+			DO BANKUNO
+		CASE Izbp = 2
+			DO BANKLIST
+		CASE Izbp = 3
+			DO BANKIZME
+		CASE Izbp = 4
+			DO BANKUP
+		CASE Izbp = 5
+			DO BANKBRIS
+	ENDCASE
+
+ENDDO
+
+CLEAR SCREEN
+RETURN

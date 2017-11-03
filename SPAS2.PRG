@@ -1,0 +1,146 @@
+LOCAL wPred, wOd, wDo, wRb, wZbSveK, wZbSveR, wZbSveP, wZbSvePP
+
+CLEAR SCREEN
+@ 0, 0 TO 24,79 DOUBLE
+@ 1,1 SAY Centriraj("KONTROLISE PAZARE U KNJIGAMA PRIHOD-RASHOD, POREZ, KIR, PAZAR", 78)
+
+IF File ("KONTROL2.DBF")
+   ERASE KONTROL2.DBF
+ENDIF
+
+IF ! FILE ("KONTROL2.DBF")
+	CREATE RADNA
+	STORE "RB        N5  " TO POLJE1
+	STORE "KBR       C10 " TO POLJE2
+	STORE "KDAT      D8  " TO POLJE3
+	STORE "KRAZ      N152" TO POLJE4
+	STORE "KRAS      N152" TO POLJE5
+	STORE "KPOR      N152" TO POLJE6
+	STORE "KIRS      N152" TO POLJE7
+	STORE "KPAZ      N152" TO POLJE8
+	FOR I = 1 TO 8
+		STORE STR(I,1) TO BROJ
+		STORE "POLJE" + BROJ TO P1
+		APPEND BLANK
+		REPLACE FIELD_NAME WITH SUBSTR(&P1,1,10)
+		REPLACE FIELD_TYPE WITH SUBSTR(&P1,11,1)
+		REPLACE FIELD_LEN WITH VAL(SUBSTR(&P1,12,2))
+		REPLACE FIELD_DEC WITH VAL(SUBSTR(&P1,14,1))
+	NEXT I
+	CREATE KONTROL2 FROM RADNA
+	USE
+	ERASE RADNA.DBF
+ENDIF
+
+SELECT 0
+USE RASHODN INDEX RASHINDN
+SELECT 0
+USE POREZN INDEX POREZND
+SELECT 0
+USE KIR INDEX KIRDK
+SELECT 0
+USE PAZDAT INDEX PAZINDAT
+SELECT 0
+USE KONTROL2
+ZAP
+GO TOP
+
+wPred = Space(10)
+wOd   = Date()
+wDo   = Date()
+
+@ 10,10 SAY "OD DATUMA: " GET wOd
+@ 11,10 SAY "DO DATUMA: " GET wDo
+READ
+
+IF Lastkey() = 27
+   CLOSE DATABASES
+   RETURN
+ENDIF
+
+SELECT RASHODN    && idemo prvo RASHODN pa POREZN
+DO WHILE ! Eof()
+   IF RDK < wOd .OR. RDK > wDo
+      SKIP
+      LOOP
+   ENDIF
+
+   IF RSVEP = 0
+      SKIP
+      LOOP
+   ENDIF
+   
+   IF RSK = 1
+      SKIP
+      LOOP
+   ENDIF
+   
+   wRb      = RRB
+   wPred    = RDK
+   wZbSveR  = Val("000000000000.00")  && pazar u prihod-rashod
+   wZbSveP  = Val("000000000000.00")  && pazar u porezima
+   wZbSveK  = Val("000000000000.00")  && pazar u KIR-u
+   wZbSvePP = Val("000000000000.00")  && pazar u PAZDAT-u
+
+	* sabrati vise stavki u toku jednog datuma
+   DO WHILE wPred = RDK
+      wZbSveR = Round(wZbSveR + RSVEP,2)
+      SKIP
+   ENDDO
+
+   SELECT POREZN      && zbir iz poreza
+   SEEK wPred
+   DO WHILE wPred = DATK
+      IF PAZAR = 0 .OR. SK = 1
+         SKIP
+         LOOP
+      ENDIF
+      wZbSveP = PAZAR
+      EXIT
+   ENDDO
+
+   SELECT KIR			&& zbir iz KIR-a
+   SEEK DtoS(wPred)
+   IF Found()
+      wZbSveK = UKS
+   ENDIF
+
+   SELECT PAZDAT		&& zbir iz PAZDAT-a
+   SEEK wPred
+   DO WHILE PAZDAT = wPred
+      IF SK = 1
+         SKIP
+         LOOP
+      ENDIF
+      wZbSvePP = wZbSvePP + Round(PAZKOL * PAZCDIN,2)
+      SKIP
+      IF Eof()
+         EXIT
+      ENDIF
+   ENDDO
+
+	SELECT KONTROL2
+	APPEND BLANK
+	REPLACE RB   WITH wRb
+	REPLACE KDAT WITH wPred
+	REPLACE KRAZ WITH wZbSveR - Round((wZbSveR + wZbSveP + wZbSveK + wZbSvePP)/4,2)
+	REPLACE KRAS WITH wZbSveR
+	REPLACE KPOR WITH wZbSveP
+	REPLACE KIRS WITH wZbSveK
+	REPLACE KPAZ WITH wZbSvePP
+
+   SELECT RASHODN
+ENDDO
+
+CLOSE DATABASES
+
+CLEAR SCREEN
+@ 0, 0 TO 24,79 DOUBLE
+@ 1,1 SAY Centriraj("LISTANJA ZBIROVA PAZARA U PRIHOD-RASHOD I POREZU", 78)
+@ 3,2  SAY "ENTER - izmena polja(zapamtite prethodnu vrednost)"
+@ 4,2  SAY "DELETE - brisanje cele stavke"
+@ 5,2  SAY "ALT/N - unos nove stavke"
+
+DO LISTBAZA WITH 8,5,22,75,"kontrol2"
+
+RETURN

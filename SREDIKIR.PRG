@@ -1,0 +1,74 @@
+LOCAL nPDV_Koef := 0.0, nPDV_KNiza := 0.0
+
+SELECT 0
+USE KIR INDEX KIRDK,KIRBRAC
+
+Zbir    = Val("000000000000.00")
+mZbir18 = Val("000000000000.00")
+mZbir8  = Val("000000000000.00")
+mPor18  = Val("000000000000.00")
+mPor8   = Val("000000000000.00")
+Dat1    = Date()
+Dat2    = Date()
+
+CLEAR SCREEN
+@ 0,0 TO 24,79 DOUBLE
+@ 1,1 SAY Centriraj("AZURIRANJE KIR-a PO OSNOVICAMA", 78)
+
+@ 4,8 SAY "OD DATUMA: " GET Dat1
+@ 5,8 SAY "DO DATUMA: " GET Dat2
+READ
+
+IF Lastkey() =  27
+	CLOSE DATABASES
+	RETURN
+ENDIF
+
+SELECT KIR
+DO WHILE ! Eof()
+
+	IF DATKKIR < Dat1 .OR. DATKKIR > Dat2
+		SKIP
+		IF Eof()
+			EXIT
+		ELSE
+			LOOP
+		ENDIF
+	ENDIF
+
+	* OVDE VIDETI DA LI JE VEC PUSTANO I SREDJENO
+	IF UKS = OSN18 + IZN18 + OSN8 + IZN8
+		SKIP
+		LOOP
+	ENDIF
+	* KRAJ PROVERE PUSTANOG I SREDJENOG
+
+	@ 10,10 SAY "RADIM DATUM: "
+	@ 10,25 SAY DATKKIR
+
+	REPLACE UKNAKKIR WITH UKS
+	* ubaceno da sredi porez
+	mZbir18 = OSN18
+	mZbir8  = OSN8
+	nPDV_Koef = KoefPDV(DATKKIR)            
+   mPor18 = Round(Zbir18 * nPDV_Koef,2)
+   nPDV_KNiza := KoefPDVNiza(DATKKIR)
+	mPor8   = Round(OSN8  * nPDV_KNiza,2)
+	* kraj sredjivanja poreza
+	REPLACE OSN18 WITH Round(mZbir18 - mPor18,2)
+	REPLACE IZN18 WITH mPor18
+	REPLACE OSN8  WITH Round(mZbir8 - mPor8,2)
+	REPLACE IZN8  WITH mPor8
+
+	mZbir18 = 0
+	mZbir8  = 0
+	Zbir    = 0
+	mPor18  = 0
+	mPor8   = 0
+
+   SKIP
+
+ENDDO
+
+CLOSE DATABASES
+RETURN
