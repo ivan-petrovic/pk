@@ -1,0 +1,96 @@
+// Ovo je za sad samo pomocni opis. Tj. tekuca struktura baza
+// nije proverena da li odgovara ovoj koja je data ovde
+// Tamo gde sam proverio zapisacu "PROVERENO" pored imena baze
+
+/////////////////////////////////////////////////
+// Baza sa podacima o obvezniku OBVEZMAT
+/////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////
+// Baza tarifa - TARDAT
+/////////////////////////////////////////////////
+STORE "TARSIF    C8  " TO POLJE1
+STORE "TARSST    N6 2" TO POLJE2
+STORE "TARRST    N6 2" TO POLJE3
+STORE "TAROST    N6 2" TO POLJE4
+STORE "TARvoj    N6 2" TO POLJE5
+STORE "TARTAK    N6 2" TO POLJE6
+STORE "TARDAT    D8  " TO POLJE7
+STORE "TARZBIR   N6 2" TO POLJE8
+STORE "TARDP     N152" TO POLJE9
+STORE "TARKP     N152" TO POLJE10
+STORE "TARPOR    N152" TO POLJE11
+
+INDEX ON TARSIF + DTOS(TARDAT) TO TARINSIF
+/////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////
+// Baza artikala:
+// - ARTDAT INDEX ARTINSIF, ARTINNAZ
+// - ARTPANE INDEX TAKOIN
+/////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////
+// Baza opisa grupa artikala - OPIS INDEX OPIN
+/////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////
+// Baza poslovnih partnera - PPDAT
+/////////////////////////////////////////////////
+STORE "PPSIF     N6  " TO POLJE1
+STORE "PPNAZ     C30 " TO POLJE2
+STORE "PPADR     C30 " TO POLJE3
+STORE "PPPOS     N5  " TO POLJE4
+STORE "PPMES     C20 " TO POLJE5
+STORE "PPZIR     C30 " TO POLJE6
+STORE "PPDMG     D8  " TO POLJE7
+STORE "PPTEL     C20 " TO POLJE8
+STORE "PPPIB     C9  " TO POLJE9
+
+INDEX PPINSIF,PPINNAZ,PPINMES,PPINZIR
+/////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+// Baza NABPROD:
+// Formira se kada se stampa izvestaj
+// za sve artikle (ARTIZV1.PRG)
+// NABPROD INDEX ON STR(SIF,13,0) + DTOS(DATN) TO NABPROD
+/////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+// Baza kalkulacija - DMPDAT
+/////////////////////////////////////////////////
+DMPDAT INDEX DMPINBRO,DMPINBS
+/////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+// Baza Knjige prihoda rashoda - RASHODN
+INDEX ON RBR TO RASHINKN
+INDEX ON Dtos(RDK) TO RASHINDN
+/////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////
+// Baza poreza? - POREZN
+INDEX ON Val(BROJ) TO POREZNB
+INDEX ON DATK TO POREZND
+INDEX ON BROJ TO POREZNBB
+/////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+// Baza Knjige izlaznih racuna - KIR
+INDEX ON Dtos(DATKKIR) TO KIRDK
+INDEX ON BRRACKIR TO KIRBRAC
+/////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+// Baza Knjige primljenih racuna - KPR
+INDEX ON BRACKPR TO KPRBRAC
+INDEX ON BRKAL+BRACKPR TO KPRBRACK
+INDEX ON DKKPR TO KPRDK
+/////////////////////////////////////////////////
+

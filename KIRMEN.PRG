@@ -1,0 +1,53 @@
+*******************************************
+* Glavni meni za knjigu izlaznih racuna
+*******************************************
+LOCAL Izbor, nPredhIzbor
+
+nPredhIzbor = 1
+DO WHILE .T.
+
+	MainWnd("KNJIGA IZLAZNIH RACUNA")
+
+	Izbor = nPredhIzbor
+	@ 6 ,27 PROMPT " UNOS STAVKE       " MESSAGE "PO SVIM OSNOVAMA"
+	@ 8 ,27 PROMPT " IZMENA STAVKE     " MESSAGE "IZMENA STAVKI PO SVIM OSNOVAMA"
+	@ 10,27 PROMPT " BRISANJE STAVKE   " MESSAGE "BRISANJE STAVKE IZ RACUNARA"
+	@ 12,27 PROMPT " LISTANJE STAVKI   " MESSAGE "LISTANJE STAVKI POMERANJEM EKRANA"
+	@ 14,27 PROMPT " ZBIROVI KNJIGE    " MESSAGE "ZBIROVI PO SVIM KOLONAMA KNJIGE RASHODA"
+	@ 16,27 PROMPT " STAMPA KNJIGE     " MESSAGE "STAMPA OD DATUMA DO DATUMA"
+	@ 18,27 PROMPT " AZURIRA KIR       " MESSAGE "AZURIRA KIR IZ PAZARA"
+	@ 20,27 PROMPT " SREDI KIR         " MESSAGE "SREDJUJE OSNOVICE U KNJIZI KIR"
+	@ 22,27 PROMPT " NUMERISANJE KIR   " MESSAGE "NUMERISE STAVKE KIR-a"
+
+	CLEAR TYPEAHEAD
+	MENU TO Izbor
+   * nPredhIzbor = Izbor
+   
+	DO CASE
+		CASE Lastkey() = 27
+			EXIT
+		CASE Izbor = 1
+			DO KIRUNOS
+		CASE Izbor = 2
+			DO KIRI
+		CASE Izbor = 3
+			* DO KIRBRIS
+			MessageBox("Zabranjeno brisanje!")			
+		CASE Izbor = 4
+			DO KIRLIST
+		CASE Izbor = 5
+			DO KIRZBIR
+		CASE Izbor = 6
+			DO KIRPRN
+			* DO KIR11
+		CASE Izbor = 7
+			DO PAZSPEC
+		CASE Izbor = 8
+			DO SREDIKIR
+		CASE Izbor = 9
+			DO NUMKIR
+	ENDCASE
+
+ENDDO
+
+RETURN

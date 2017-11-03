@@ -1,0 +1,2 @@
+KOMSTR
+GKMENI

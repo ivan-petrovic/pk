@@ -1,0 +1,157 @@
+IF ! FILE("KPR.DBF")
+   CREATE RADNA
+   STORE "RBKPR     N 4 " TO POLJE1
+   STORE "DKKPR     D8  " TO POLJE2
+   STORE "DPPVDKPR  D8  " TO POLJE3
+   STORE "BRKAL     C10 " TO POLJE4
+   STORE "BRACKPR   C10 " TO POLJE5
+   STORE "DRACKPR   D8  " TO POLJE6
+   STORE "KUPKPR    N 6 " TO POLJE7
+   STORE "PIBKPR    C13 " TO POLJE8
+   STORE "UKSPDV    N122" TO POLJE9
+   STORE "UKSPDV1   N122" TO POLJE10
+   STORE "OSLPDV    N122" TO POLJE11
+   STORE "UVOZN     N122" TO POLJE12
+   STORE "NPDV      N122" TO POLJE13
+   STORE "UKPPDV    N122" TO POLJE14
+   STORE "ODPDV     N122" TO POLJE15
+   STORE "NEODPDV   N122" TO POLJE16
+   STORE "VBEZPDVU  N122" TO POLJE17
+   STORE "IZNPDVU   N122" TO POLJE18
+   STORE "VDU       N122" TO POLJE19
+   STORE "IZNN5     N122" TO POLJE20
+   FOR I = 1 TO 20
+      IF I < 10
+         STORE  STR(I,1) TO BROJ
+      ELSE
+         STORE  STR(I,2) TO BROJ
+      ENDIF
+      P1 = "POLJE" + BROJ
+      APPEND BLANK
+      REPLACE FIELD_NAME WITH SUBSTR(&P1,1,10)
+      REPLACE FIELD_TYPE WITH SUBSTR(&P1,11,1)
+      REPLACE FIELD_LEN WITH Val(SUBSTR(&P1,12,2))
+      REPLACE FIELD_DEC WITH Val(SUBSTR(&P1,14,1))
+   NEXT I
+   CREATE KPR FROM RADNA
+   INDEX ON DTOS(DKKPR) TO KPRDK
+   INDEX ON BRACKPR TO KPRBRAC
+   INDEX ON BRKAL+BRACKPR TO KPRBRACk
+   USE
+   ERASE RADNA.DBF
+ELSE
+   * Kreirati kprpom.dbf prosirenu za jedno polje, prepisati iz kpr.dbf
+   * i kprpom.dbf proglasiti za kpr.dbf
+ENDIF
+
+WRRB = Val("0000")
+/*
+SELECT 0
+USE KPR
+GO BOTTOM
+WRRB = RRB + 1
+CLOSE KPR
+*/
+
+SELECT 0
+USE KPR
+INDEX ON DKKPR TO KPRDK
+INDEX ON BRKAL+BRACKPR TO KPRBRACk
+INDEX ON BRACKPR TO KPRBRAC
+CLOSE KPR
+
+SELECT 0
+USE KPR INDEX KPRDK,KPRBRAC,KPRBRACk,RBKPRIN
+
+SELECT KPR
+DO WHILE .T.
+   DN = " "
+   WRBkPr = Val("0000")
+   WdkkPr = DATE()
+   WdPPVDKPR = DATE()
+   wbracKPR = Space(10)
+   wdracKPR = date()
+   Wkupkpr = Val("000000")
+   wpibkpr = Space(13)
+   wukspdv = Val("000000000.00")
+   wukspdv1 = Val("000000000.00")
+   woslpdv = Val("000000000.00")
+   wnpdv = Val("000000000.00")
+   wuvozn = Val("000000000.00")
+   wukppdv = Val("000000000.00")
+   wodpdv = Val("000000000.00")
+   wneodpdv = Val("000000000.00")
+   wvbezpdvu = Val("000000000.00")
+   wiznpdvu = Val("000000000.00")
+   wvdu = Val("000000000.00")
+   wiznn5 = Val("000000000.00")
+   wrsk = Val("0")
+
+   **************************************************************
+   MainMask("UNOS MATICNIH PODATAKA U KNJIGU PRIMLJENIH RACUNA")
+
+   @ 2, 2 SAY "REDNI BROJ                   " GET WRBKpR PICTURE "9999"
+   @ 3, 2 SAY "DATUM KNJIZENJA              " GET WDKKpR
+   @ 4, 2 SAY "DATUM PLAC.UVOZ ILI POLJOP.  " GET WDppvdkpr
+   @ 5, 2 SAY "BROJ RACUNA                  " GET WBRACKPR
+   @ 6, 2 SAY "DATUM IZDAVANJA RACUNA (DOK.)" GET WDRACKPR
+   @ 7, 2 SAY "KUPAC (NAZIV I SEDISTE)      " GET WKUPKPR PICTURE "999999"
+   @ 8, 2 SAY "PIB ili JMBG                 " GET WPIBKPR
+   @ 9, 2 SAY "UKUPNA NAKNADA SA PDV        " GET WUKSPDV PICTURE "999999999.99"
+   @ 9,43 SAY "UKUP.NAK. SA PDV pomoc" GET WUKSPDV1 PICTURE "999999999.99"
+   @ 10,2 SAY "OSLOBODJENE NABAVKE (cl.18) " GET WOSLPDV PICTURE "999999999.99"
+   @ 11,2 SAY "NAKNADA ZA UVOZ NE PLACA     "
+   @ 12,2 SAY "SE PDV                       " GET WUVOZN PICTURE "999999999.99"
+   @ 13,2 SAY "NAKNADA BEZ PDV_a            " GET WNPDV PICTURE "999999999.99"
+   @ 15,2 SAY "UK.IZN.OBR. PRETHODNOG PDV   " GET WUKPPDV PICTURE "999999999.99"
+   @ 16,2 SAY "IZN.PRETH. PDV MOZE SE ODBITI" GET WODPDV PICTURE "999999999.99"
+   @ 17,2 SAY "IZN.PRETH. PDV NE MOZE SE OD." GET WNEODPDV PICTURE "999999999.99"
+   @ 18,2 SAY "VREDNOST BEZ PDV UVOZ tac. 21" GET WVBEZPDVU PICTURE "999999999.99"
+   @ 19,2 SAY "IZNOS PDV UVOZ tac. 23       " GET WIZNPDVU PICTURE "999999999.99"
+   @ 20,2 SAY "VRED.PRIM.DOBARA I ULUGA t.25" GET WVDU PICTURE "999999999.99"
+   @ 21,2 SAY "IZNOS NAKNADE OD 5 %  t. 24  " GET WIZNN5 PICTURE "999999999.99"
+
+   READ
+
+   IF Lastkey() = 27
+      EXIT
+   ENDIF
+   **************************************************************
+
+   @ 23,24 SAY "Upis (D/N)? " GET DN PICTURE "!" VALID(DN $ "DN")
+   READ
+
+   IF Lastkey() = 27
+      EXIT
+   ENDIF
+   IF DN = "N"
+      LOOP
+   ENDIF
+
+   APPEND BLANK
+   REPLACE RBkPr    WITH WRBkPr
+   REPLACE dkkPr    WITH WdkkPr
+   REPLACE dPPVDKPR WITH WdPPVDKPR
+   REPLACE bracKPR  WITH wbracKPR
+   REPLACE dracKPR  WITH wdracKPR
+   REPLACE kupkpr   WITH Wkupkpr
+   REPLACE pibkpr   WITH wpibkpr
+   REPLACE ukspdv   WITH wukspdv
+   REPLACE ukspdv1  WITH wukspdv1
+   REPLACE oslpdv   WITH woslpdv
+   REPLACE uvozn    WITH wuvozn
+   REPLACE npdv     WITH wnpdv
+   REPLACE ukppdv   WITH wukppdv
+   REPLACE odpdv    WITH wodpdv
+   REPLACE neodpdv  WITH wneodpdv
+   REPLACE vbezpdvu WITH wvbezpdvu
+   REPLACE iznpdvu  WITH wiznpdvu
+   REPLACE vdu      WITH wvdu
+   REPLACE IZNN5    WITH wiznn5
+
+   SELECT KPR
+   wrrb = wrrb + 1
+ENDDO
+
+CLOSE DATABASES
+RETURN

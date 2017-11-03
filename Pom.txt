@@ -1,0 +1,82 @@
+"C:\Program Files\Adobe\Reader 10.0\Reader\AcroRd32.exe" ^
+/n /A "fdf=d:\clipper\jovanka\Nalog.fdf=OpenActions" ^
+"d:\clipper\jovanka\Nalog-za-prenos-A4.pdf"
+taskkill /f /im AcroRd32.exe
+
+"C:\Program Files\Adobe\Reader 10.0\Reader\AcroRd32.exe" ^
+/n /t "d:\clipper\jovanka\Nalog_data.fdf" "E120n"
+
+Virman
+********************************************************************************
+duznik-nalogodavac                       sifra                  NALOG ZA PRENOS
++------------------------------------+ | placanja valuta iznos
+|                                    | | +---+    +----+ +--------------------+
+|                                    | | |   |    |din.| |                    |
+|                                    | | +---+    +----+ +--------------------+
++------------------------------------+ |          racun duznika - nalogodavca
+                                       |          +---------------------------+
+svrha placanja                         |          |                           |
++------------------------------------+ | broj     +---------------------------+
+|                                    | | modela   poziv na broj (zaduzenje)
+|                                    | | +---+    +---------------------------+
++------------------------------------+ | |   |    |                           |
+                                       | +---+    +---------------------------+
+poverilac - primalac                   |          racun poverioca - primaoca
++------------------------------------+ |          +---------------------------+
+|                                    | |          |                           |
+|                                    | | broj     +---------------------------+
++------------------------------------+ | modela   poziv na broj (odobrenje)
+                                       | +---+    +---------------------------+
+__________________________             | |   |    |                           |
+pecat i potpis nalogodavca             | +---+    +---------------------------+
+                                                                     ___
+              ________________________   ___________________        |___|
+              mesto i datum prijema      datum valute               hitno
+
+                                 Obrazac br. 3
+********************************************************************************
+
+
+IF lLaser
+   ? Chr(27) + '(s17.5H'      && kondenz On za laserski
+ELSE
+   ? Chr(15)                  && kondenz On za matricni
+ENDIF
+IF lLaser
+   ? Chr(27) + '&k0S' + Chr(27) + '(s10.5H'  && kondenz Off za laserski
+ELSE
+   ? Chr(18)                                 && kondenz Off za matricni
+ENDIF
+
+
+SET DEVICE TO PRINT
+SET PRINTER TO ekran.txt
+SET PRINT ON
+
+* Landscape on
+* [ESC] & l 1O (el one Oh)    27 38 108 49 79 	Landscape
+? Chr(27) + Chr(38) + Chr(108) + Chr(49) + Chr(79)
+
+
+? "|---+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8----+----9----+----0----+----|"
+FOR i = 1 TO 40
+   ? "|" + Space(108) + "|"
+NEXT
+? "|---+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8----+----9----+----0----+----|"
+
+* Landscape off
+* [ESC] E     27 69
+? Chr(27) + Chr(69)
+
+SET PRINT OFF
+SET PRINTER TO
+SET DEVICE TO SCREEN
+
+
+RUN copy ekran.txt lpt1:
+
+RETURN
+
+reset  | landsc      |mrg|66l  |l/in| hmgr       |coln   |
+[ESC] E [ESC] & l 1 o 0 e 6 6 f 9 D [ESC] & a 0 l 1 3 2 M [ESC] ( s 1 3 H
+? Chr(27)+ Chr(69) + Chr(27) + "&l1o0e66f9D" + Chr(27) + "&a0l132M" + Chr(27)+ "(s13H"

@@ -1,0 +1,138 @@
+LOCAL wPred, wOd, wDo, wDat
+LOCAL wZbSveK, wZbSveR, wZbSveP, wZbSveKp
+
+IF FILE ("KONTROLA.DBF")
+   ERASE KONTROLA.DBF
+ENDIF
+
+IF ! FILE ("KONTROLA.DBF")
+	CREATE RADNA
+	STORE "KBR       C10 " TO POLJE1
+	STORE "KDAT      D8  " TO POLJE2
+	STORE "KKAL      N152" TO POLJE3
+	STORE "KRAS      N152" TO POLJE4
+	STORE "KPOR      N152" TO POLJE5
+	STORE "KKPR      N152" TO POLJE6
+	FOR I = 1 TO 6
+		STORE STR(I,1) TO BROJ
+		STORE "POLJE" + BROJ TO P1
+		APPEND BLANK
+		REPLACE FIELD_NAME WITH SUBSTR(&P1,1,10)
+		REPLACE FIELD_TYPE WITH SUBSTR(&P1,11,1)
+		REPLACE FIELD_LEN WITH VAL(SUBSTR(&P1,12,2))
+		REPLACE FIELD_DEC WITH VAL(SUBSTR(&P1,14,1))
+	NEXT I
+	CREATE KONTROLA FROM RADNA
+	USE
+	ERASE RADNA.DBF
+ENDIF
+
+USE POREZN
+INDEX ON BROJ TO POREZNBB
+USE
+
+SELECT 0
+USE KPR INDEX KPRBRACK
+
+SELECT 0
+USE DMPDAT INDEX DMPINBRO
+
+SELECT 0
+USE RASHODN INDEX RASHINKN
+
+SELECT 0
+USE POREZN INDEX POREZNBB
+
+SELECT 0
+USE KONTROLA
+ZAP
+GO TOP
+
+SELECT DMPDAT
+
+wPred = Space(10)
+wOd = Date()
+wDo = Date()
+
+CLEAR SCREEN
+@ 0, 0 TO 24,79 DOUBLE
+@ 1,1 SAY Centriraj("UPOREDNA ANALIZA KALKULACIJA,RASHODA I POREZA", 78)
+
+@ 10,10 SAY "OD DATUMA: " GET wOd
+@ 11,10 SAY "DO DATUMA: " GET wDo
+READ
+
+IF Lastkey() = 27
+   CLOSE DATABASES
+   RETURN
+ENDIF
+
+DO WHILE ! Eof()
+	IF DMPDAT < wOd .OR. DMPDAT > wDo
+   	SKIP
+   	LOOP
+   ENDIF
+
+   wPred    = DMPBRO
+   wDat     = DMPDAT
+   wZbSveK  = Val("000000000000.00")
+   wZbSveR  = Val("000000000000.00")
+   wZbSveP  = Val("000000000000.00")
+   wZbSveKp = Val("000000000000.00")
+
+   DO WHILE wPred = DMPBRO
+      wZbSveK = Round(wZbSveK + Round(DMPKOL * DMPMSP,2),2)		&& Nabavna u DMPDAT
+      SKIP
+   ENDDO
+
+   SELECT RASHODN
+   SEEK wPred
+   IF Found()
+      wZbSveR = RPRODV
+   ELSE
+      wZbSveR = 0
+   ENDIF
+
+   SELECT POREZN
+   SEEK wPred
+   IF Found()
+      wZbSveP = VRROBE
+   ELSE
+      wZbSveP = 0
+   ENDIF
+
+   SELECT KPR
+   SEEK wPred
+   IF Found()
+      wZbSveKp = UKSPDV
+   ELSE
+      wZbSveKp = 0
+   ENDIF
+
+   *   idemo na upis ako sva tri zbira nisu ista po apsolutnoj vrednosti
+   IF Abs(wZbSveK) <> Abs(wZbSveR) .OR. Abs(wZbSveK) <> Abs(wZbSveP) .OR. Abs(wZbSveR) <> Abs(wZbSveP)
+      SELECT KONTROLA
+      APPEND BLANK
+      REPLACE KBR  WITH wPred
+      REPLACE KDAT WITH wDat
+      REPLACE KKAL WITH wZbSveK
+      REPLACE KRAS WITH wZbSveR
+      REPLACE KPOR WITH wZbSveP
+      REPLACE KKPR WITH wZbSveKp
+   ENDIF
+
+	SELECT DMPDAT
+ENDDO
+
+CLOSE DATABASES
+
+CLEAR SCREEN
+@ 0, 0 TO 24,79 DOUBLE
+@ 1,1 SAY Centriraj("LISTANJA ZBIROVA KALKULACIJA, RASHODA, POREZA", 78)
+@ 3,2  SAY "ENTER - izmena polja(zapamtite prethodnu vrednost)"
+@ 4,2  SAY "DELETE - brisanje cele stavke"
+@ 5,2  SAY "ALT/N - unos nove stavke"
+
+DO LISTBAZA WITH 8,5,22,75,"kontrola"
+
+RETURN

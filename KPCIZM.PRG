@@ -1,0 +1,74 @@
+* - nije pregledano - *
+SET CONFIRM ON
+SET DATE GERMAN
+SET MESSAGE TO 24 CENTER
+PUBLIC DATUM,V
+DATUM = DATE()
+USE KPCPRI INDEX KPCPRIDK,KPCPRIR
+DO WHILE .T.
+CLEAR SCREEN
+ESCKEY()
+V = 0
+DN = " "
+WDK = DATE()       
+@ 10,10 SAY "UNESITE DATUM PAZARA" GET WDK          
+READ
+IF Lastkey() = 27
+EXIT
+ENDIF
+SEEK WDK
+IF !Found()
+@ 20,20 SAY "NEMA PAZARA POD TIM DATUMOM"
+WAIT " "
+@ 20,20 SAY Replicate(" ",50)
+@ 22,20 SAY Replicate(" ",50)
+LOOP
+ENDIF
+IF PRIH > 0
+WRB = RB         
+WDK = DK      
+WPIR = PIR    
+WDRP = DRP   
+WBRP = BRP          
+WPRIH = PRIH                   
+ ELSE
+    SKIP
+       IF WDK = DK
+             WRB = RB
+             WDK = DK
+             WPIR = PIR
+             WDRP = DRP
+             WBRP = BRP
+             WPRIH = PRIH
+       ELSE
+              @ 20,10 SAY "NEMA PAZARA STR_a ZA TAJ DAN"
+              WAIT " "
+              LOOP
+       ENDIF  
+ENDIF       
+DO PRMIZ
+IF V = 1
+EXIT
+ENDIF
+@ 23,24 SAY "UPIS   D/N  ?  " GET DN PICTURE "!" VALID(DN $ "DN")
+READ
+IF Lastkey() = 27
+EXIT
+ENDIF
+IF DN = "N"
+LOOP
+ENDIF
+REPLACE RB WITH WRB
+REPLACE DK WITH WDK
+REPLACE PIR WITH WPIR
+REPLACE DRP WITH WDRP
+REPLACE BRP WITH WBRP
+REPLACE PRIH WITH WPRIH
+ENDDO
+*
+USE
+*CLEAR ALL
+CLEAR SCREEN
+RETURN
+
+

@@ -1,0 +1,404 @@
+[Config]
+Compilator.SaveAll=0
+Compilator.Capture=0
+Compilator.HideOutput=0
+Compilator.ProgSaveAll=0
+Compilator.ProgRunSelection=0
+Compilator.LogType=0
+DefaultCPIndex=0
+LogtoEnd=1
+DontOpen=0
+AbsolutePath=0
+FileFormat=0
+ProjectFilesOnly=0
+[Project tree]
+New project
+	+SK
+		SK.BAT
+		KOMSTR.PRG
+		KOMSTR.CLP
+		KOMSTR.LNK
+		prntxt.bat
+		+STR
+			+Knjigovodstvo
+				GKMENI.PRG
+				-Prihod-rashod
+					PRIHRASH.CLP
+					RASHMENN.PRG
+					RASPUNN.PRG
+					RASIZMN.PRG
+					RASMIZNN.PRG
+					RASBRISN.PRG
+					RASMBRNN.PRG
+					RASL1.PRG
+					RASHZB01.PRG
+					RASHZB02.PRG
+					PREPPDV.PRG
+					PREPPAZ.PRG
+					KK11.PRG
+					PKPRN.PRG
+					RASLISTN.PRG
+					RASMLISN.PRG
+					RASLISNN.PRG
+					PAZSPEC1.PRG
+					PK1POR.PRG
+					KIRUPK1.PRG
+					BILUSPH.PRG
+				-Knjiga primljenih racuna
+					KPR.CLP
+					KPRMEN.PRG
+					KPRUNOS.PRG
+					KPRI.PRG
+					KPRI1.PRG
+					KPRLIST.PRG
+					KPRZBIR1.PRG
+					KPRZBIR.PRG
+					KPR11.PRG
+					KPRPRN.PRG
+					PREPPDVP.PRG
+					KONTROLA.PRG
+					KONTKPR1.PRG
+					KPRNAB.PRG
+					KPRKAL.PRG
+					NUMKPR.PRG
+					KPR11S.PRG
+					PERANAB.PRG
+				-Ziro racuni
+					ZIRORAC.CLP
+					ZIRMEN.PRG
+					GKZPUN.PRG
+					GKZIZME.PRG
+					GKZIMAS.PRG
+					GKZLIST2.PRG
+					GKZLIST.PRG
+					ZIRPRIV.PRG
+					GKZSTAMP.PRG
+					ZIRPOR.PRG
+					ZIRPOR1.PRG
+					ZIRPORV.PRG
+					SREDZIR.PRG
+					-Banke
+						BANKMENI.PRG
+						BANKUNO.PRG
+						BUNMAS.PRG
+						BANKLIST.PRG
+						BANKIZME.PRG
+						BIZMAS.PRG
+						BANKUP.PRG
+						BUPMAS.PRG
+						BANKBRIS.PRG
+						BBRISMAS.PRG
+						BANKUN1.PRG
+				-Problematika PDV-a
+					PDV.CLP
+					KPCMENI.PRG
+					-Prihodi PDV
+						PRKPCMEN.PRG
+						KPCPAZ.PRG
+						KPCIZM.PRG
+						PRMIZ.PRG
+						KPCLIST.PRG
+						KPCZBIR.PRG
+						KPCSTAMP.PRG
+					-Pazari i porez na prodato
+						PAZARMEN.PRG
+						KPCPUP.PRG
+						KPCPST.PRG
+						KPCBRP.PRG
+					-Knjiga poreza
+						POREZPIC.PRG
+						POREUPIC.PRG
+						PORIZPIC.PRG
+						BRISPPIC.PRG
+						PORLIPIC.PRG
+						PORUPPIC.PRG
+						PORZUPIC.PRG
+						PORSPIC.PRG
+						PICSTELA.PRG
+						PICSTEL1.PRG
+					-Preracunate PDV stope
+						PICPORMM.PRG
+						IZKOEKPI.PRG
+						KOELKPI.PRG
+						KOBRKPI.PRG
+				-Knjiga izlaznih racuna
+					KIR.CLP
+					KIRMEN.PRG
+					KIRUNOS.PRG
+					KIRI.PRG
+					KIRLIST.PRG
+					KIRZBIR.PRG
+					KIR11.PRG
+					KIRPRN.PRG
+					PAZSPEC.PRG
+					SREDIKIR.PRG
+					NUMKIR.PRG
+				-Prihod
+					PRIHOD.CLP
+					PRIHMEN.PRG
+					PAZSTR30.PRG
+					PAZKOM30.PRG
+					PAZSTRIZ.PRG
+					PAZSMIZ.PRG
+					PAZKOMIZ.PRG
+					PAZKMIZ.PRG
+					GKLISTN.PRG
+					GKLISTKN.PRG
+					GKZBIR.PRG
+					GKZBIRK.PRG
+					DODPAZ.PRG
+					GKSTAMP9.PRG
+				-Porez na promet
+					POREZNP.CLP
+					POREZNN.PRG
+					POREUNN.PRG
+					PORIZNN.PRG
+					BRISPNN.PRG
+					PORLKOSO.PRG
+					PORLNNN.PRG
+					PORUPTNN.PRG
+					KK22.PRG
+				-Preracunati porez
+					PRERPZ.CLP
+					KPORMEN.PRG
+					ZIRPLACU.PRG
+					VIRPOROO.PRG
+					VIRPORDO.PRG
+					VIRM1.PRG
+				-KEPU knjiga
+					KEPU.CLP
+					TRGOVAC.PRG
+					TRGUN.PRG
+					TRGIZ.PRG
+					TRGBRIS.PRG
+					TRGLIS.PRG
+					TRGZB.PRG
+					PUNKTRG.PRG
+					PREPTRG.PRG
+					TRGSTAM.PRG
+				-Stampa poreske prijave
+					PPPDV.PRG
+				-Placen porez po vrstama
+					PLACPOR.CLP
+					PLACPOR.PRG
+					UPLACPOR.PRG
+					IPLACPOR.PRG
+					LPLACPOR.PRG
+					ZPLACPOR.PRG
+					SPLACPOR.PRG
+					SPLACPO1.PRG
+					KUMULUPL.PRG
+					PREPPORS.PRG
+					PREPPOR.PRG
+				-Stampa virmana za PDV
+					VIRPDV05.PRG
+				-Pausalno oporezovani
+					PAUSAL.CLP
+					EPOMEN.PRG
+					EPOU.PRG
+					EPOI.PRG
+					EPOBR.PRG
+					EPOLI.PRG
+					EPOLINNN.PRG
+					EPOZB.PRG
+					EPOST.PRG
+			-Kalkulacije
+				KALK.CLP
+				KALMAMA.PRG
+				KALDMPM1.PRG
+				PIVOKOSO.PRG
+				KDMPNAZA.PRG
+				KDMPPAUS.PRG
+				KNOV.PRG
+				KNN.PRG
+				KALUP01.PRG
+				KDMPBST.PRG
+				BS.PRG
+				KALBKAL.PRG
+				BKN.PRG
+				CIGSTAMP.PRG
+				KLKSTAMP.PRG
+				KDMPDNE.PRG
+				ARTNUL.PRG
+				BRISVERA.PRG
+				ZBIRKAL.PRG
+			-Artikli
+				ART.CLP
+				ART.PRG
+				ARTUNOS.PRG
+				ARPIZME.PRG
+				ARTBRIS.PRG
+				ARTLIST.PRG
+				ARTUPIT.PRG
+				ARTUNAZ.PRG
+				SIFLIS.PRG
+				ARTIZV.PRG
+				ARTIZV1.PRG
+				ARTUNOS1.PRG
+				NADJIART.PRG
+				-Lager
+					LAGERMEN.PRG
+					LAGSTA.PRG
+					KOMLAGER.PRG
+					SIFLAGER.PRG
+					LAGTARDD.PRG
+					LAGNUL.PRG
+					SIFLAGCE.PRG
+					SLCEKAL.PRG
+				ARTGRIZV.PRG
+				DPU.PRG
+				DPU1.PRG
+			-Povracaj robe dobavljacu
+				POVROB.CLP
+				POVROB.PRG
+				STRPREN.PRG
+				STRPOV.PRG
+				STRPOVN.PRG
+				STPOVRA.PRG
+				STRPRENS.PRG
+				STRPREN1.PRG
+				KNOVMIN.PRG
+				HELPP.PRG
+			-Poslovni partneri
+				PP.CLP
+				PP.PRG
+				PPUNOS.PRG
+				PPBRIS.PRG
+				PPIZME.PRG
+				-Upiti
+					PPUPMENI.PRG
+					PPUPSIF.PRG
+					PPUPMES.PRG
+					PPUPZIR.PRG
+					PPUPNAZ.PRG
+					PPUNOS1.PRG
+					NADJIPP.PRG
+				-Stampa
+					PPSTMENI.PRG
+					PPSTAM.PRG
+					PPSTSV.PRG
+				KARTDOB.PRG
+			-Nivelacije
+				NIVEL.CLP
+				POPIS.PRG
+				KOMNIVE1.PRG
+				KOMNIVE2.PRG
+				POP.PRG
+				POPUNOS.PRG
+				POPIZME.PRG
+				POPUPIT.PRG
+				POPLIST.PRG
+				POPSTAM.PRG
+				POPNUPIT.PRG
+				POPNLIST.PRG
+				STNIVREZ.PRG
+				POPREK.PRG
+				POPDNEV.PRG
+				POPRTAR.PRG
+				POPTARST.PRG
+				POPBRIS.PRG
+				POPCEOB.PRG
+				CENNIV.PRG
+				CKNIV.PRG
+				KNIVPOPO.PRG
+				KNIVSTAM.PRG
+				KOMNITAR.PRG
+				KOMCENIV.PRG
+				KOMPOP.PRG
+				KOMPOPUN.PRG
+			-Izvestaji
+				IZVEST.CLP
+				STRIZV.PRG
+				PAZUP.PRG
+				PAZPRAV.PRG
+				KPAZUP.PRG
+				KPAZPRAV.PRG
+				PORSTRD.PRG
+				PORSTR30.PRG
+				PAZBSK.PRG
+			-Sifarnik opisa
+				OPIS.CLP
+				OPISMEN.PRG
+				OPISUN.PRG
+				OPISIZ.PRG
+				OPISBR.PRG
+				OPISLI.PRG
+			-Tarife
+				TARIFE.CLP
+				TAR.PRG
+				TARUNOS.PRG
+				TARIZME.PRG
+				TARBRIS.PRG
+				TARLIST.PRG
+				AVRAMTAR.PRG
+				TARUNOS1.PRG
+			-Maticni podaci firme
+				MATPOD.CLP
+				MATGLMEN.PRG
+				MATUNOS.PRG
+				MATIZME.PRG
+				MATIZMEN.PRG
+			-Ostale opcije i pomocne funkcije
+				OSTALE.CLP
+				OSTALE.PRG
+				DDREIND.PRG
+				SPAS.PRG
+				NUMRAS.PRG
+				JELASTEL.PRG
+				PUKARA.PRG
+				PUNKALR1.PRG
+				NOVAGOD1.PRG
+				SPAS2.PRG
+				RASREV.PRG
+				SETTINGS.PRG
+				LISTBAZA.PRG
+				LISTBAZ1.PRG
+				FUNKCIJE.PRG
+				M_TYPE.PRG
+				KON01KPR.PRG
+				PERADD.PRG
+		-Test programi
+			-Encode Licence Date
+				ENCLIC.PRG
+				ENCLIC.CLP
+				ENCLIC.LNK
+			TEST.PRG
+			TEST.CLP
+			TEST.LNK
+			BROWTXT.PRG
+			SPECCHAR.PRG
+		Baze.txt
+		Beleske.txt
+		Pom.txt
+[Open project files]
+0=KOMSTR.PRG
+1=GKMENI.PRG
+2=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\SimpleWin\panel.cpp
+3=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\scenet.cpp
+4=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\scene.cpp
+5=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\gasket3d.h
+6=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\maptabst.cpp
+[Selected Project Files]
+Main=
+Selected=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\maptabst.cpp
+[KOMSTR.PRG]
+TopLine=1
+Caret=1,1
+[GKMENI.PRG]
+TopLine=1
+Caret=10,43
+[C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\SimpleWin\panel.cpp]
+TopLine=128
+Caret=1,175
+[C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\scenet.cpp]
+TopLine=87
+Caret=18,21
+[C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\scene.cpp]
+TopLine=239
+Caret=15,90
+[C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\gasket3d.h]
+TopLine=5
+Caret=66,22
+[C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\maptabst.cpp]
+TopLine=55
+Caret=1,103

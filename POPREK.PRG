@@ -1,0 +1,107 @@
+* - nije pregledano - *
+SET DATE GERMAN
+POR = "OTKUCAJTE NEKU TIPKU ZA DALJE..."
+SELECT 1
+USE POPDAT INDEX POPINDAT
+SELECT 2
+USE ARTPANE INDEX APINSIF
+DO WHILE .T.
+    CLEAR SCREEN
+    DO ESCK
+    @ 1,27 SAY "REKAPITULACIJA POPISA"
+    WPOPBROJ = 0
+    WPOPDAT = CTOD("  .  .  ")
+    @ 10,10 SAY "DATUM POPISA:" GET WPOPDAT VALID ! Empty(WPOPDAT)
+    @ 10,40 SAY "BROJ POPISA:" GET WPOPBROJ PICTURE "9999999999" VALID ! Empty(WPOPBROJ)
+    READ
+    IF Lastkey() = 27
+       EXIT
+    ENDIF
+    SELECT 1
+    KLJUC = STR(WPOPBROJ) + DTOS(WPOPDAT)
+    SEEK KLJUC
+    IF ! Found()
+       @ 19,1 SAY "NIJE UNET TAKAV POPIS !"
+       ? " "
+       WAIT POR
+       LOOP
+    ENDIF
+    PP = 0
+    RED = 20
+    WPOPART = 0
+    WPOPNAZ = Space(30)
+    STORE 0 TO WSV,WNV,WRAZ
+*******
+    DO WHILE ! Eof()
+ ***
+       STORE 0 TO WST,WNC,WSC,WR,WPROC,IN
+ ***  
+      IF ! WPOPBROJ = POPBROJ
+         EXIT
+      ENDIF
+      IF ! WPOPDAT = POPDAT
+         EXIT
+      ENDIF
+ ***  
+      WNC = POPNC
+      WSC = POPSC
+      WPROC = POPPROC
+      WST = POPST
+      IF POPNC = 0
+         WNC = WSC + (WPROC / 100) * WSC
+      ELSE
+         WNC = POPNC
+      ENDIF
+      WR = (WNC - WSC) * WST
+      WSV = WSV + WSC * WST
+      WNV = WNV + WNC * WST
+      WRAZ = WRAZ + WR
+      SKIP
+    ENDDO
+    IF IN = 1
+      IN = 0
+      LOOP
+    ENDIF
+      DO HEAD_PROC4
+      RED = 12
+      @ RED,1 SAY "STARA VREDNOST ROBE            :"
+      @ RED,34 SAY WSV PICTURE "999,999,999,999.99"
+      RED = 14
+      @ RED,1 SAY "NOVA VREDNOST ROBE             :"
+      @ RED,34 SAY WNV PICTURE "999,999,999,999.99"
+      RED = 16
+      @ RED,1 SAY "RAZLIKA U VREDNOSTI            :"
+      @ RED,34 SAY WRAZ PICTURE "999,999,999,999.99"
+      RED = 18
+      TEKST = Space(10)
+      IF WSV > WNV
+         TEKST = "UMANJENJE"
+      ELSE
+         TEKST = "POVECANJE"
+      ENDIF
+      @ RED,1 SAY "PROSECNO "
+      @ RED,10 SAY TEKST
+      ?? " CENA"
+      WPROC = (WRAZ / WSV) * 100
+      @ RED,45 SAY ROUND(WPROC,2) PICTURE "9999.99"
+      ?? " %"
+      @ 20,1 SAY " "
+      WAIT POR
+ENDDO
+*
+CLOSE DATABASES
+RELEASE ALL
+CLEAR SCREEN
+RETURN
+PROC HEAD_PROC4
+  CLEAR SCREEN
+  RED = 2
+  @ RED,27 SAY "REKAPITULACIJA POPISA"
+  RED = RED + 1
+  @ RED,10 SAY "BROJ:"
+  ?? WPOPBROJ
+  @ RED,50 SAY "DATUM:"
+  ?? WPOPDAT
+  RED = RED + 1
+  @ RED,1 SAY Replicate("*",79)
+RETURN

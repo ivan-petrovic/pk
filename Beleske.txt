@@ -1,0 +1,142 @@
+1. -----------------------------------------------------------------------------
+komstr.prg
+-----------
+Glavni program krece u fajlu komstr.prg.
+Tu sam iskljucio neke public promenljive za koje do sada nisam video da
+se igde koriste.
+Kao i ucitavanje neke promenljive mVan iz baze VAN, koja je takodje
+ostatak iz neke stare verzije.
+Trenutno je iskljucen i kalkulator.
+Iskljucio sam pozdravni ekran: "Program sluzi..."
+Iskljucio sam i lozinku. Cemu sluzi?
+Proveru da li je monitor u boji takodje sam iskljucio.
+Glavni meni koji je bio realizovan u okviru fajla ksmen.prg
+sam prebacio ovde.
+Ovde se ukljucuje fajl funkcije.prg u kome su razne pomocne procedure
+i funkcije koje se koriste ovde i na drugim mestima u programu.
+Sadrzi brojne procedure istog tipa koje su sve trebale da budu realizovane
+kao jedna jedina procedura kojoj ce se kao argument proslediti
+string koji treba da ispise. Ali avaj...
+
+Napomena:
+ksmen.prg - nije vise vazeci. Ovde je ranije bio glavni meni programa.
+
+Da bi se program preveo potrebne su i biblioteke MARKO.LIB i UTIL.LIB.
+Te biblioteke je pisao Marko Dzepina (vidi komentar dole).
+
+Biblioteka MARKO.LIB sadrzi sledece f-je:
+F_STAMP, MSG, BOX, BOXC, GRESKA, NET_USE.
+Fajl MARKOLIB.LIB je kopija fajla MARKO.LIB.
+Fajl MARKONET.LIB sadrzi iste f-je kao i MARKO.LIB, osim NET_USE.
+(interesantan naziv onda)
+
+Biblioteka UTIL.LIB sadrzi sledece f-je:
+AL_BOX i PRTB.
+
+Da bi se program preveo potreban je jos i program m_type.prg.
+On koristi navedene f-je iz gore pomenutih biblioteka i sluzi za prikaz
+tekstualnog fajla na ekranu i stampanje istog.
+--------------------------------------------------------------------------------
+
+2. -----------------------------------------------------------------------------
+Prvi meni je str.
+panmen.prg
+-----------
+Pozivaju se programi za rad sa str-om. Ovde je centralni deo programa.
+
+2.5. Poslovni partneri (PP.PRG)
+U PPUNOS.PRG na pocetku je kopirao bazu PPDAT u pomocnu bazu PPDATT.
+To sam izbacio.
+Unos, izmena, brisanje, listanje, stampa poslovnih partnera.
+Mislim da se program kartdob.prg ne koristi vise, ali sam ga ostavio.
+U njemu se formiraju kartice po dobavljacima.
+
+2.8. Opis grupa artikala (OPISMEN.PRG)
+Unos, izmena, brisanje, listanje sifara grupa artikala.
+
+2.9. Tarife (TAR.PRG)
+Unos, izmena, brisanje, listanje tarifa.
+
+--------------------------------------------------------------------------------
+
+3. -----------------------------------------------------------------------------
+Drugi meni je Maticni podaci firme.
+matglmen.prg
+-----------
+Unos i izmena podataka o vlasniku i nazivu firme, PIB-u i sl.
+Ovi podaci se uglavnom ispisuju u zaglavlju raznih izvestaja i pregleda.
+
+4. -----------------------------------------------------------------------------
+Ostali meniji na glavnoj maski:
+ddreind.prg
+-----------
+Reindeks datoteka.
+Reindeksiraju se postojeci i nepostojeci fajlovi, iz svih Darkovih programa.
+Najludje je kada se reindeksira fajl koji nema indeks.
+Fajl se za svaki skucaj otvori i zatvori.
+Treba precistiti, mada i ne mora, i ostaviti samo baze
+koje koristi ovaj program.
+--------------------------------------------------------------------------------
+
+Marko Dzepina:
+Njegovi programi koriste funkcije i procedure Box, BoxC, Al_Box i sl.
+za koje ne znam u kom su fajlu smestene. Izgleda da su u nekoj biblioteci.
+
+To su programi:
+ppunos1.prg, nadjipp.prg, artunos1.prg,
+nadjiart.prg, tarunos1.prg, bankun1.prg.
+
+Oni se pozivaju iz nekih Darkovih procedura, kao pomoc za unos artikala,
+poslovnih partnera i sl. iz liste, ili unos novog artikla ili poslovnog
+partnera i sl.
+
+Bankun1.prg sluzio je za unos podataka o bankama koji su se smestali u bazu
+bankdat.dbf. Ali to se vise ne koristi.
+--------------------------------------------------------------------------------
+
+Stampanje izvestaja u programu:
+Programi oznaceni sa '+' su pregledani.
+KK22
+TRGSTAM
+SPLACPOR
+EPOST
+CIGSTAMP
+SIFLAGCE
+SLCEKAL
+STPOVRA
+STRPRENS
+STNIVREZ
+KNIVSTAM
+PAZPRAV
+
++KPR11
++KPRPRN
++KPR11S
++KIR11
++KIRPRN
++DPU
++KK11
++KPCPST
+--------------------------------------------------------------------------------
+%FDF-1.2%âaIÓ
+1 0 obj
+<< /FDF
+<<
+/Fields 
+[ 
+<< /V /Off /T (CheckBox1)>>
+<< /V /Yes /T (CheckBox2)>>
+<< /V /choice2 /T (RadioButtons)>>
+<< /V (Doug Brown)/T (textField1)>> 
+]
+/F (test FDF entry.pdf)
+>>
+>> 
+endobjtrailer<</Root 1 0 R >>
+%%EOF
+
+-----------------
+PP Stampa Svi omah baca na stampac, ako moze prvo na ekran
+--------------------------------------------------------------------------------
+ArtUnos1: u tabelarnom pregledu artikala ide prvo kolicina, pa cena.
+U verziji jovanka je obrnuto.
