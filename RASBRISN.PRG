@@ -1,31 +1,28 @@
-* - nije pregledano - *
-SET CONFIRM ON
-SET DATE GERMAN
-SET MESSAGE TO 24 CENTER
-PUBLIC DATUM,V
-DATUM = DATE()
-select 0
+SELECT 0
 USE RASHODN INDEX RASHINKN,RASHINDN
+
 B = LASTREC()
 B = B + 1
 wimaras = 0
+
 DO WHILE .T.
-   CLEAR SCREEN
-   CLEAR SCREEN
    WBROJ = Space(10)
+   
+   MainMask("BRISANJE STAVKE U KNJIZI PRIHODA-RASHODA (ESC - Izlaz)")
    @ 10,10 SAY "UNESITE BROJ KALKULACIJE(POP./NIV.)" GET WBROJ
    READ
+   
    IF Lastkey() = 27
       EXIT
    ENDIF
+   
    SEEK WBROJ
    IF !Found()
       @ 20,10 SAY "NEMA TAKVE STAVKE U KNJIZI RASHODA"
       WAIT " "
-      @ 20,10 SAY REPLI(" ",70)
       LOOP
    ENDIF
-   V = 0
+
    wimapor = 0
    DN = " "
    WRRB = VAL("0000")
@@ -55,28 +52,83 @@ DO WHILE .T.
    WRZIRU = RZIRU
    WRZIRI = RZIRI
    WRSK = RSK
-   DO RASMBRNN
-   IF V = 1
-     EXIT
-   ENDIF
-   @ 23,24 SAY "BRISANJE  D/N  ? " GET DN PICTURE "!" VALID(DN $ "DN")
+   
+   * DO RASMBRNN - ranije je ovaj fajl radio sledeci segment koda
+	**********************************************************
+   MainMask("BRISANJE STAVKE U KNJIZI PRIHODA-RASHODA (ESC - Izlaz)")
+
+   @ 2,5   SAY "REDNI BROJ                   "
+   @ 2,35  SAY WRRB PICTURE "9999"
+   @ 2,40  SAY "DATUM KNJIZENJA"
+   @ 2,56  SAY WRDK
+   @ 3,5   SAY "BROJ DOKUMENTA               "
+   @ 3,35  SAY WRBR
+   @ 4,5   SAY "OPIS KNJIZENJA               "
+   @ 4,35  SAY WROPIS
+   @ 5,5   SAY "DATUM DOKUMENTA ZA KNJIZNENJE"
+   @ 5,35  SAY WRDATDOK
+   @ 6,5   SAY "PRIHOD OD ROBE OPSTA         "
+   @ 6,35  SAY WRPV PICTURE "999999999999.99"
+   @ 7,5   SAY "PRIHOD OD ROBE NIZA          "
+   @ 7,35  SAY WRPN PICTURE "999999999999.99"
+   @ 7,52  SAY WRPN1 PICTURE "999999999999.99"
+   @ 8,5   SAY "PRIHOD OD ROBE BEZ POREZA    "
+   @ 8,35  SAY WRPBEZ PICTURE "999999999999.99"
+   @ 9,5   SAY "PRIHOD OD USLUGA SA P/P      "
+   @ 9,35  SAY WRUSP PICTURE "999999999999.99"
+   @ 10,5  SAY "PRIHOD OD USLUGA BEZ P/P    "
+   @ 10,35 SAY WRUSBEZP PICTURE "999999999999.99"
+   @ 11,5  SAY "PLACENI POREZ PROIZ.USLU.   "
+   @ 11,35 SAY WRPLACP PICTURE "999999999999.99"
+   @ 12,5  SAY "SVEGA PRIHODA               "
+   @ 12,35 SAY WRSVEP PICTURE "999999999999.99"
+   @ 13,5  SAY "NAB.VRED.ROBE,REPRO.REZ.DEL "
+   @ 13,35 SAY WRNVRRR PICTURE "999999999999.99"
+   @ 14,5  SAY "VRED.SOPSTVEN.PROIZVODA     "
+   @ 14,35 SAY WRVSP PICTURE "999999999999.99"
+   @ 15,5  SAY "RAZLIKA U CENI,PROVIZIJA    "
+   @ 15,35 SAY WRRUCP PICTURE "999999999999.99"
+   @ 16,5  SAY "OBRAC.POR.AKCIZA,P/P USLUGA "
+   @ 16,35 SAY WROBPOR PICTURE "999999999999.99"
+   @ 17,5  SAY "PROD.VRADNOST ROB. I PROIZ. "
+   @ 17,35 SAY WRPRODV PICTURE "999999999999.99"
+   @ 18,5  SAY "MAT. I NEMAT. TROS. I AMORT."
+   @ 18,35 SAY WRMIN PICTURE "999999999999.99"
+   @ 19,5  SAY "DOP. I BRUTO ZARADE ZAPOSLE."
+   @ 19,35 SAY WRDOP PICTURE "999999999999.99"
+   @ 20,5  SAY "OSTALI RAS. I RAS. FINANSIR."
+   @ 20,35 SAY WRRASF PICTURE "999999999999.99"
+   @ 21,5  SAY "RASHODI                     "
+   @ 21,35 SAY WRRASUK PICTURE "999999999999.99"
+   @ 22,5  SAY "ZIRORACUN UPLACENO/ISPLACENO"
+   @ 22,35 SAY WRZIRU PICTURE "999999999999.99"
+   @ 22,52 SAY WRZIRI PICTURE "999999999999.99"
+   @ 22,68 SAY "S/K  0/1"
+   @ 22,77 SAY WRSK PICTURE "9"
+	**********************************************************
+   
+   @ 23,24 SAY "BRISANJE D/N? " GET DN PICTURE "!" VALID(DN $ "DN")
    READ
+   
    IF Lastkey() = 27
       EXIT
    ENDIF
+   
    IF DN = "N"
       LOOP
    ENDIF
+   
    DELETE
+
    wimaras = 1
    IF wrsvep <> 0
-      select 0
-      use porezn index poreznd,poreznb
-      seek wrdk
+      SELECT 0
+      USE POREZN INDEX POREZND,POREZNB
+      SEEK wrdk
       IF Found()
          DO WHILE wrdk = datk
-            IF pazar <> 0
-               delete
+            IF PAZAR <> 0
+               DELETE
                wimapor = 1
                EXIT
             ENDIF
@@ -85,31 +137,26 @@ DO WHILE .T.
          IF wimapor = 0
             @ 20,50 SAY "NEMA PAZARA U POREZIMA"
             WAIT " "
-            @ 20,50 SAY REPLI(" ",28)
             CLOSE POREZN
-            select rashodn
+            SELECT RASHODN
             LOOP
          ENDIF
-         pack
-         close porezn
-         select rashodn
-      else
-            @ 20,50 SAY "NEMA PAZARA U POREZIMA"
-            WAIT " "
-            @ 20,50 SAY REPLI(" ",28)
-            CLOSE POREZN
-            select rashodn
+         PACK
+         CLOSE POREZN
+         SELECT RASHODN
+      ELSE
+         @ 20,50 SAY "NEMA PAZARA U POREZIMA"
+         WAIT " "
+         CLOSE POREZN
+         SELECT RASHODN
       ENDIF
    ENDIF
 ENDDO
-*
+
 IF wimaras = 1
-   select rashodn
+   SELECT RASHODN
    PACK
 ENDIF
-close rashodn
-*CLEAR ALL
-CLEAR SCREEN
-RETURN
 
-
+CLOSE RASHODN
+RETURN

@@ -19,6 +19,7 @@ New project
 		KOMSTR.CLP
 		KOMSTR.LNK
 		prntxt.bat
+		acrord.bat
 		+STR
 			+Knjigovodstvo
 				GKMENI.PRG
@@ -217,6 +218,7 @@ New project
 				KALBKAL.PRG
 				BKN.PRG
 				CIGSTAMP.PRG
+				CIGSTAM2.PRG
 				KLKSTAMP.PRG
 				KDMPDNE.PRG
 				ARTNUL.PRG
@@ -354,14 +356,11 @@ New project
 				LISTBAZA.PRG
 				LISTBAZ1.PRG
 				FUNKCIJE.PRG
+				HTMLFUNC.PRG
 				M_TYPE.PRG
 				KON01KPR.PRG
 				PERADD.PRG
 		-Test programi
-			-Encode Licence Date
-				ENCLIC.PRG
-				ENCLIC.CLP
-				ENCLIC.LNK
 			TEST.PRG
 			TEST.CLP
 			TEST.LNK
@@ -372,33 +371,9 @@ New project
 		Pom.txt
 [Open project files]
 0=KOMSTR.PRG
-1=GKMENI.PRG
-2=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\SimpleWin\panel.cpp
-3=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\scenet.cpp
-4=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\scene.cpp
-5=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\gasket3d.h
-6=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\maptabst.cpp
 [Selected Project Files]
 Main=
-Selected=C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\maptabst.cpp
+Selected=KOMSTR.PRG
 [KOMSTR.PRG]
-TopLine=1
-Caret=1,1
-[GKMENI.PRG]
-TopLine=1
-Caret=10,43
-[C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\SimpleWin\panel.cpp]
-TopLine=128
-Caret=1,175
-[C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\scenet.cpp]
-TopLine=87
-Caret=18,21
-[C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\scene.cpp]
-TopLine=239
-Caret=15,90
-[C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\scene\gasket3d.h]
-TopLine=5
-Caret=66,22
-[C:\Users\Ivan\Documents\Visual Studio 2015\Projects\JA_OGL\maptabst.cpp]
-TopLine=55
-Caret=1,103
+TopLine=41
+Caret=138,41

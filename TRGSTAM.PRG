@@ -6,110 +6,227 @@ CLOSE TRG
 SELECT 0
 USE TRG INDEX TRGDK
 
-DO WHILE .T.
+wdonzad = val("000000000000000.00")    && donos sa predhodne strane - zaduzenje
+wdonraz = val("000000000000000.00")    && donos sa predhodne strane - razduzenje
+cZavrsni = "N"
 
-   wzad = val("000000000000000.00")
-   wraz = val("000000000000000.00")
-   wizndin = val("000000000000000.00")
-   worgj = Space(4)          
-   wrb = val("0000")
-   red = 0
-   wstr = 1
-   wod = ctod("  .  .  ")
-   wdo = ctod("  .  .  ")
+nBrRedova = 0     && ukupan broj stavki za stampu
+nUkBrStr = 0      && ukupan broj strana
+nBrStrane = 1     && broj tekuce strane
+nRedPoStr = 30    && broj redova po strani
 
-   MainMask("STAMPANJE TRGOVACKE KNJIGE")
+wod = ctod("01.01." + Str(YEAR(DATE())))
+wdo = DATE()
 
-   @ 8,10 SAY "OD DATUMA: " GET wod VALID ! Empty(wod)
-   @ 9,10 SAY "DO DATUMA: " GET wdo VALID(wdo >= wod)
-   READ
+MainMask("STAMPANJE TRGOVACKE KNJIGE")
 
-   IF Lastkey() = 27
-      EXIT
+@  7,10 SAY "STAMPANJE KEP KNJIGE"
+@  8,10 SAY "OD DATUMA:     " GET wod VALID ! Empty(wod)
+@  9,10 SAY "DO DATUMA:     " GET wdo VALID(wdo >= wod)
+@ 10,10 SAY "ZAVRSNI (D/N): " GET cZavrsni PICTURE "!" VALID(cZavrsni $ "DN")
+READ
+
+IF Lastkey() = 27
+   CLOSE DATABASES
+   RETURN
+ENDIF
+
+SET CONSOLE OFF
+SET ALTERNATE TO c:\PK\kepknj.htm
+SET ALTERNATE ON
+header("Stampa knjige primljenih racuna","kepknj.css")
+makeHeader(Alltrim(gcNazRad) + " - KEP KNJIGA")
+
+* ukupan broj stavki za stampu, mora unapred da se odredi
+* da bi moglo da se vidi kada se stampa poslednja strana
+* koja se stampa razlicito u slucaju zavrsne stampe (cZavrsni = D)
+GO TOP
+DO WHILE ! Eof()
+   IF ! (wod <= DK .AND. DK <= wdo)
+      SKIP
+      LOOP
    ENDIF
+   nBrRedova = nBrRedova + 1
+   SKIP
+ENDDO
+nUkBrStr = Int(nBrRedova / nRedPoStr) + 1
 
-   SET DEVICE TO PRINT
-   * SET PRINT TO LISTA
-   SET PRINT ON
-   IF lLaser
-      ? Chr(27) + '(s17.5H'      && kondenz On za laserski
-   ELSE
-      ? Chr(15)                  && kondenz On za matricni
+* Stampaj sadrzaj tabele
+GO TOP
+DO WHILE ! Eof()
+   IF ! (wod <= DK .AND. DK <= wdo)
+      SKIP
+      LOOP
    ENDIF
+   
+   ? General_El('<div class="trg-strana">',12)
+   TrgZag()    && odstampaj zaglavlje strane
+   
+   ? TR_El_open("", 12)
+      ? General_El('<td></td>',12)
+      ? General_El('<td></td>',12)
+      ? General_El('<td><b>DONOS</b></td>',12)
+      ? General_El('<td class="desno"><b>' + Formatiraj(wdonzad,14,2) + '</b></td>',12)
+      ? General_El('<td class="desno"><b>' + Formatiraj(wdonraz,14,2) + '</b></td>',12)
+   ? TR_El_close("", 12)
 
-   DO TRGZAG
-   DO WHILE ! Eof()
+   n := 1
+   DO WHILE n <= nRedPoStr .AND. .NOT. Eof()
       IF ! (wod <= DK .AND. DK <= wdo)
          SKIP
          LOOP
       ENDIF
+    
+      ? TR_El_open("", 12)
+         * ? TD_El_Str(Str(rb,3,0) + " " + Alltrim(BRKAL), 12)
+         ? TD_El_Str(Str(rb,3,0), 12)
+         ? TD_El_Str(substr(dtoc(DK),1,6), 12)
+         ? TD_El_Str(Alltrim(BRKAL) + " " + Alltrim(OPK) + " od " + dtoc(DK) + ".", 12)
+         ? General_El('<td class="desno">' + Formatiraj(ZAD,14,2) + '</td>',12)
+         ? General_El('<td class="desno">' + Formatiraj(RAZ,14,2) + '</td>',12)
+      ? TR_El_close("", 12)
 
-      red = red + 1
-      @ red,  1 SAY rb PICTURE "9999"
-      @ red,  6 SAY brkal
-      @ red, 17 SAY dk
-      @ red, 28 SAY Substr(opk,1,40)
-      @ red, 70 SAY zad PICTURE "999,999,999.99"
-      @ red, 85 SAY raz PICTURE "999,999,999.99"
-      @ red,103 SAY datupl
-      @ red,117 SAY izndin PICTURE "999,999,999,999.99"
-
-      IF red > 62
-         wstr = wstr + 1
-         DO TRGZAG
-      ENDIF
-
-      wzad = wzad + Round(ZAD,2)
-      wraz = wraz + Round(RAZ,2)
-      wizndin = wizndin + Round(IZNDIN,2)
+      wdonzad = wdonzad + Round(ZAD,2)
+      wdonraz = wdonraz + Round(RAZ,2)
+       
+      n = n + 1
       SKIP
-   ENDDO
+   ENDDO 
 
-   SET SOFTSEEK OFF
-   red = red + 1
-   @ red,0 SAY Replicate("-",136)
-   red = red + 1
-   @ red, 70 SAY wzad PICTURE "999,999,999.99"
-   @ red, 85 SAY wraz PICTURE "999,999,999.99"
-   @ red,117 SAY wizndin PICTURE "999,999,999,999.99"
-   red = red + 1
-   @ red,0 SAY " "
+   IF cZavrsni = "D" .AND. nUkBrStr = nBrStrane
+      * ako je zavrsna stampa, a radi se o poslednjoj strani 
+      ? TR_El_open("", 12)
+         ? General_El('<td></td>',12)
+         ? General_El('<td></td>',12)
+         ? General_El('<td></td>',12)
+         ? General_El('<td class="desno"><b>' + Formatiraj(wdonzad,14,2) + '</b></td>',12)
+         ? General_El('<td class="desno"><b>' + Formatiraj(wdonraz,14,2) + '</b></td>',12)
+      ? TR_El_close("", 12)
+      
+      ? TR_El_open("", 12)
+         ? General_El('<td></td>',12)
+         ? General_El('<td></td>',12)
+         ? General_El('<td><b>ZALIHE</b></td>',12)
+         IF wdonraz < wdonzad
+            ? General_El('<td class="desno"><b>-' + Formatiraj(wdonzad - wdonraz,14,2) + '</b></td>',12)
+         ELSE
+            ? General_El('<td class="desno"><b>' + Formatiraj(wdonraz - wdonzad,14,2) + '</b></td>',12)
+         ENDIF
+         ? General_El('<td></td>',12)
+      ? TR_El_close("", 12)
 
-   IF lLaser
-      ? Chr(27) + '&k0S' + Chr(27) + '(s10.5H'  && kondenz Off za laserski
+      ? TR_El_open("", 12)
+         ? General_El('<td></td>',12)
+         ? General_El('<td></td>',12)
+         ? General_El('<td><b>UKUPNO</b></td>',12)
+         ? General_El('<td class="desno"><b>' + Formatiraj(wdonraz,14,2) + '</b></td>',12)
+         ? General_El('<td class="desno"><b>' + Formatiraj(wdonraz,14,2) + '</b></td>',12)
+      ? TR_El_close("", 12)
+      
    ELSE
-      ? Chr(18)                                 && kondenz Off za matricni
+      * cZavrsni="N", ili cZavrsni="D" ali nije poslednja strana 
+      ? TR_El_open("", 12)
+         ? General_El('<td></td>',12)
+         ? General_El('<td></td>',12)
+         ? General_El('<td><b>SVEGA ZA PRENOS</b></td>',12)
+         ? General_El('<td class="desno"><b>' + Formatiraj(wdonzad,14,2) + '</b></td>',12)
+         ? General_El('<td class="desno"><b>' + Formatiraj(wdonraz,14,2) + '</b></td>',12)
+      ? TR_El_close("", 12)
    ENDIF
-   SET DEVICE TO SCREEN
-   SET PRINT OFF
+
+   TrgFuter()
+   ? General_El('</div> <!-- trg-strana -->',12)
+   
+   nBrStrane = nBrStrane + 1
 ENDDO
+
+DO futer
+
+SET ALTERNATE TO
+SET ALTERNATE OFF
+SET CONSOLE ON
 
 CLOSE DATABASES
 RETURN
 
 ***************************************************************
-PROCEDURE trgzag
+* Zaglavlje na svakoj strani kep knjige
+*************************************************************** 
+PROCEDURE TrgZag
 
-@ 1,  1 SAY gcNazRad
-@ 2, 30 SAY "     T  R  G  O  V  A  C  K  A               K   NJ   I   G   A"
-@ 3,127 SAY "STR."
-@ 3,132 SAY wstr PICTURE "9999"
-@ 4, 40 SAY "OD DATUMA"
-@ 4, 50 SAY wod
-@ 4, 77 SAY "DO DATUMA"
-@ 4, 87 SAY wdo
-@ 6,  0 SAY "REDNI"
-@ 6,  6 SAY "DATUM KNJIZENJA"
-@ 6, 23 SAY "O  P  I  S   K  NJ  I  Z  E  NJ  A"
-@ 6, 61 SAY "I  Z  N  O  S   D  I  N  A  R  A"
-@ 6,103 SAY "UPLACENO NA TEKUCI RACUN"
-@ 7,  0 SAY "BROJ"
-@ 7, 70 SAY "ZADUZENJE"
-@ 7, 85 SAY "RAZDUZENJE"
-@ 7,100 SAY "DATUM KNJIZENJA"
-@ 7,119 SAY "IZNOS DINARA"
-@ 8,  0 SAY Replicate("-",136)
-red = 8
+   ? General_El('<p class="br-strane">Strana: ' + Str(nBrStrane,3) + '</p>',12)
+
+   * Podaci o trgovcu
+   ? TBL_El_open("trg-zaglavlje", 9)
+      ? TR_El_open("", 12)
+         ? General_El('<td><b>Obrazac KEP</b></td>',12)
+         ? TD_El_Str("", 12)
+      ? TR_El_close("", 12)
+
+      ? TR_El_open("", 12)
+         ? TD_El_Str("TRGOVAC: ", 12)
+         ? TD_El_Str(Alltrim(gcNazRad), 12)
+      ? TR_El_close("", 12)
+
+      ? TR_El_open("", 12)
+         ? TD_El_Str("OBJEKAT-PRODAJNO MESTO: ", 12)
+         ? TD_El_Str(Alltrim(gcAdresa), 12)
+      ? TR_El_close("", 12)
+
+      ? TR_El_open("", 12)
+         ? TD_El_Str("MESTO: ", 12)
+         ? TD_El_Str(Alltrim(gcMesto), 12)
+      ? TR_El_close("", 12)
+   ? TBL_El_close("trg-zaglavlje", 9)
+
+   * Naslov KEP knjige
+   ? General_El('<h3>KNJIGA EVIDENCIJE PROMETA ZA ' + Str(YEAR(wod)) + '. GODINU</h3>',12)
+
+   * Otvori tabelu za stavke knjige i formiraj zaglavlje tabele
+   ? TBL_El_open("trg-tabela", 9)
+      ? TR_El_open("", 12)
+         ? General_El('<th rowspan="2">Red. broj</th>',12)
+         ? General_El('<th rowspan="2">Datum evidencije <BR/> (dan i mesec)</th>',12)
+         ? General_El('<th rowspan="2">Opis evidentirane promene <BR/> (naziv, broj i datum dokumenta)</th>',12)
+         ? General_El('<th colspan="2">Iznos dinara</th>',12)
+      ? TR_El_close("", 12)
+      
+      ? TR_El_open("", 12)
+         ? TH_El_Str("zaduzenje", 12)
+         ? TH_El_Str("razduzenje", 12)
+      ? TR_El_close("", 12)
+      
+      ? TR_El_open("", 12)
+         ? TH_El_Str("1", 12)
+         ? TH_El_Str("2", 12)
+         ? TH_El_Str("3", 12)
+         ? TH_El_Str("4", 12)
+         ? TH_El_Str("5", 12)                           
+      ? TR_El_close("", 12)
+   * ? TBL_El_close("trg-tabela", 9) u TrgFuter proceduri 
+
+RETURN
+
+
+***************************************************************
+* Futer na svakoj strani kep knjige
+***************************************************************
+PROCEDURE TrgFuter
+
+   * Zatvori tabelu
+   ? TBL_El_close("trg-tabela", 9)
+
+   ? TBL_El_open("trg-futer", 9)
+      ? TR_El_open("", 12)
+         ? General_El('<td rowspan="2"></td>',12)
+         ? General_El('<td rowspan="2">M.P.</td>',12)
+         ? TD_El_Str("ODGOVORNO LICE", 12)
+      ? TR_El_close("", 12)
+      
+      ? TR_El_open("", 12)
+         ? General_El('<td class="potpis">' + gcPrez_Ime + '</td>',12)
+      ? TR_El_close("", 12)
+   ? TBL_El_close("trg-futer", 9)
 
 RETURN
 ***************************************************************

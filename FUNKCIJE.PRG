@@ -312,6 +312,8 @@ RETURN
 *******************************************
 
 *******************************************
+* ne radi dobro za negativne brojeve,
+* npr napisace: -.126.656,25 	
 FUNCTION Formatiraj(nIzn, nUkPos, nDecPos)
 LOCAL cRez, cTmp, cPosleDec, cCeoBroj
 

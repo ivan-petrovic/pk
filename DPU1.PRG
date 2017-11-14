@@ -5,9 +5,6 @@
 * a Jovanka je trazila da poslednja kolona bude
 * 11 + 12. To je sve.
 *************************************************
-
-LOCAL lIzmenio := .T.
-
 PRIVATE wDat1
 
 IF File("DMPINSIF.NTX")
@@ -47,56 +44,30 @@ IF Lastkey() = 27
 	RETURN
 ENDIF
 
-Formiraj1_LDPU(.T.)
-
-SET KEY -9 TO F10_DPU1_Print
-
-DO WHILE lIzmenio
-   lIzmenio = m_type("ldpu.prn",132)
-ENDDO
-
-SET KEY -9 TO
+Formiraj1_LDPU()
 
 CLOSE DATABASES
 RETURN
 
-*************************************************
-PROCEDURE F10_DPU1_Print
-
-	Formiraj1_LDPU(.F.)
-
-RETURN
 
 *************************************************
-PROCEDURE Formiraj1_LDPU(lToFile)
-	LOCAL wPre, wArtCena, nArtKol, wZbirN, wZbirP, Red
+PROCEDURE Formiraj1_LDPU()
+	LOCAL wPre, wArtCena, nArtKol, wZbirN, wZbirP
 	LOCAL nRBr, nPrenKol, nNabKol, nProdKol, lPrvaStr
 	LOCAL nZbir11, nZbir12, nZbir13, control_str
 
-	lPrvaStr = .T.
-	nRBr = 1
-	Red  = 1
+   nRbr = 1
 	nZbir11 = 0
 	nZbir12 = 0
 	nZbir13 = 0
 
-	SET DEVICE TO PRINT
-	IF(lToFile)
-		SET PRINT TO LDPU
-	ELSE
-		SET PRINT TO LPT1
-	ENDIF
-	SET PRINT ON
+   SET CONSOLE OFF
+   SET ALTERNATE TO c:\PK\ldpu.html
+   SET ALTERNATE ON
+   header("Stampa liste dnevnog prometa ugostitelja","ldpu.css")
+   makeHeader(Alltrim(gcNazRad) + " - Lista dnevnog prometa ugostitelja")
 
-	IF(.NOT. lToFile)
-   	IF lLaser
-         control_str = Chr(27) + '(s17H' + Chr(27) + '&l5C'
-         @ 0,0 SAY control_str      && kondenz On za laserski
-      ELSE
-         ? Chr(15)                  && kondenz On za matricni
-      ENDIF
-	ENDIF
-	
+   ? General_El_Str('<div class="ldpu">',6)
 	LDPU_Obveznik()
 	LDPU1_Zaglavlje()
 
@@ -145,65 +116,76 @@ PROCEDURE Formiraj1_LDPU(lToFile)
 		nPrenKol = nArtKol  - (wZbirN - wZbirP)
 		
 		* Jedan red izvestaja
-		IF lPrvaStr
-			IF Red > 73
-				EJECT
-				LDPU1_Zaglavlje()
-				Red = 1
-				lPrvaStr = .F.
-			ENDIF
-		ELSE
-			IF Red > 80
-				EJECT
-				LDPU1_Zaglavlje()
-				Red = 1
-			ENDIF
-		ENDIF
-		
 		SELECT ARTPANE
-		? Str(nRBr,3)+ Space(1)
-		* ?? ARTSIF + Space(1)
-		?? SubStr(ARTNAZ,1,25) + Space(1)
-		?? SubStr(ARTTAR,1,4) + Space(1)
-		?? ARTJM + Space(1)
-		?? Str(nPrenKol,8,2)
-		?? Str(nNabKol,8,2)
-		?? Str(nPrenKol + nNabKol,8,2)
-		?? Str((nPrenKol + nNabKol) - nProdKol,8,2)
-		?? Str(nProdKol,8,2)
-		?? Str(ARTCEN,10,2)
-		IF SIOP == 1   && Pice
-			?? Str(nProdKol * ARTCEN,12,2)
-			?? Space(12)
-			nZbir11 = nZbir11 + (nProdKol * ARTCEN)
-		ENDIF           
-		IF SIOP == 2	&& 'Rana
-		   ?? Space(12)
-			?? Str(nProdKol * ARTCEN,12,2)
-			nZbir12 = nZbir12 + (nProdKol * ARTCEN)
-		ENDIF
-		* dakle umesto sledeca dva reda koda, 
-		* ?? Str(nNabKol * ARTCEN,12,2)
-		* nZbir13 = nZbir13 + (nNabKol * ARTCEN)
-		* u ovoj verziji ide:		
-		?? Str(nProdKol * ARTCEN,12,2)
-		nZbir13 = nZbir13 + (nProdKol * ARTCEN)
 
-		nRBr = nRBr + 1
-		Red = Red + 1
-		SKIP
+      IF (nNabKol <> 0) .OR. (nProdKol <> 0) .OR. (nPrenKol <> 0)      
+         ? TR_EL_open("", 12)
+            ? TD_EL_Num(nRBr, 0, 12)
+            ? TD_EL_Str(ARTNAZ, 12)
+            ? TD_EL_Str(ARTTAR, 12)
+            ? TD_EL_Str(ARTJM, 12)
+            ? TD_EL_Num(nPrenKol, 2, 12)
+            ? TD_EL_Num(nNabKol, 2, 12)
+            ? TD_EL_Num(nPrenKol + nNabKol, 2, 12)
+            ? TD_EL_Num((nPrenKol + nNabKol) - nProdKol, 2, 12)
+            ? TD_EL_Num(nProdKol, 2, 12)
+            ? TD_EL_Num(ARTCEN, 2, 12)
+      		IF SIOP == 1   && Pice
+               ? TD_EL_Num(nProdKol * ARTCEN, 2, 12)
+               ? TD_EL_Str("", 12)
+      			nZbir11 = nZbir11 + (nProdKol * ARTCEN)
+      		ENDIF           
+      		IF SIOP == 2	&& 'Rana
+               ? TD_EL_Str("", 12)
+               ? TD_EL_Num(nProdKol * ARTCEN, 2, 12)
+      			nZbir12 = nZbir12 + (nProdKol * ARTCEN)
+      		ENDIF
+            IF SIOP <> 1 .AND. SIOP <> 2	&& nije ni pice ni hrana
+               ? TD_EL_Str("", 12)
+               ? TD_EL_Str("", 12)
+            ENDIF
+            * Razlika u odnosu na DPU.PRG je u naredna dva reda
+            ? TD_EL_Num(nProdKol * ARTCEN, 2, 12)
+            nZbir13 = nZbir13 + (nProdKol * ARTCEN)
+         ? TR_EL_close("", 12)
+         
+         nRbr = nRbr + 1
+   	ENDIF
+   	SKIP
 	ENDDO
 	
-	LDPU_Futer(nZbir11, nZbir12, nZbir13)
-	EJECT
+   * Stampa zbirova
+   ? TR_El_open("zbir", 12)
+      ? General_El_Str('<td colspan="10" class="centriraj">SVEGA:</td>',12)
+      ? TD_EL_Num(nZbir11, 2, 12)
+      ? TD_EL_Num(nZbir12, 2, 12)
+      ? TD_EL_Num(nZbir13, 2, 12)
+   ? TR_El_close("zbir", 12)
 
-	IF(.NOT. lToFile)
-      IF lLaser
-         ? Chr(27)+ Chr(69)         && kondenz Off za laserski
-      ELSE
-         ? Chr(18)                  && kondenz Off za matricni
-      ENDIF
-	ENDIF
+   ? TBL_El_close("ldpu-table", 6)
+
+   * Mesta za potpis
+   ? TBL_El_open("ldpu-potpis", 9)
+
+      ? TR_El_open("", 12)
+      ? TD_El_Str("Sastavio", 12)
+      ? TD_El_Str("Odgovorno lice", 12)
+      ? TR_El_close("", 12)
+   
+      ? TR_El_open("", 12)
+      ? TD_El_Str("________________________", 12)
+      ? TD_El_Str("________________________", 12)
+      ? TR_El_close("", 12)
+
+   ? TBL_El_close("ldpu-potpis", 9)
+
+   ? General_El_Str("</div> <!-- ldpu -->",6)
+   
+   DO futer
+   
+   SET ALTERNATE TO
+   SET ALTERNATE OFF
+   SET CONSOLE ON
 
 	SET DEVICE TO SCREEN
 	SET PRINT OFF
@@ -213,17 +195,49 @@ RETURN
 
 *************************************************
 PROCEDURE LDPU1_Zaglavlje
-	? Space(47) + "LIST DNEVNOG PROMETA UGOSTITELJA"
-	? Space(51) + "za dan "
-	?? wDat1
-	?? " godine"
-	?
-	? "------------------------------------------------------------------------------------------------------------------------------"
-	? "Red.| Naziv jela i pica   |Stopa|Jed.|Preneta |Nabav.  | UKUPNO|Zalihe  |Utrosena |Prodajna |Ostvareni promet    |   Ukupan  |"
-	? "br. | za konzumaciju      | PDV |mere|kolicina|kolicina| (5+6) |na kraju|kol.u to-|cena po  |od usluga (9 x 10)  |   pazar   |"
-	? "    | na licu mesta       |     |    |        |        |       |dana    |ku dana  |JM sa PDV| od pica  | od jela | (11 + 12) |"
-	? "------------------------------------------------------------------------------------------------------------------------------"
-	? " 1  |          2          |  3  |  4 |    5   |    6   |    7  |    8   |    9    |   10    |     11   |    12   |     13    |"
-	? "------------------------------------------------------------------------------------------------------------------------------"
+
+   ? General_El_Str('<p class="naslov-obrasca">LIST DNEVNOG PROMETA UGOSTITELJA ZA DAN ' + DTOC(wDat1) + '. GODINE</p>',6)
+
+   ? TBL_El_open("ldpu-table", 9)
+   ? General_El_Str("<thead>",9)
+   
+   ? TR_El_open("", 12)
+      ? General_El_Str('<th rowspan="2">' + "Red.br." + '</th>',12)
+      ? General_El_Str('<th rowspan="2">' + "Naziv jela i pica za konzumaciju na licu mesta" + '</th>',12)
+      ? General_El_Str('<th rowspan="2">' + "Stopa PDV" + '</th>',12)
+      ? General_El_Str('<th rowspan="2">' + "Jed. mere" + '</th>',12)
+      ? General_El_Str('<th rowspan="2">' + "Preneta kolicina" + '</th>',12)
+      ? General_El_Str('<th rowspan="2">' + "Nabav. kolicina" + '</th>',12)
+      ? General_El_Str('<th rowspan="2">' + "UKUPNO (5+6)" + '</th>',12)
+      ? General_El_Str('<th rowspan="2">' + "Zalihe na kraju dana" + '</th>',12)
+      ? General_El_Str('<th rowspan="2">' + "Utrosena kol. u toku dana" + '</th>',12)
+      ? General_El_Str('<th rowspan="2">' + "Prodajna cena po JM sa PDV" + '</th>',12)
+      ? General_El_Str('<th colspan="2">' + "Ostvareni promet od usluga (9x10)" + '</th>',12)
+      ? General_El_Str('<th rowspan="2">' + "Ukupan pazar (11+12)" + '</th>',12)
+   ? TR_El_close("", 12)
+
+   ? TR_El_open("", 12)
+      ? TH_El_Str("od pica", 12)
+      ? TH_El_Str("od jela", 12)
+   ? TR_El_close("", 12)
+   
+   ? TR_El_open("", 12)
+      ? TH_El_Str("1", 12)
+      ? TH_El_Str("2", 12)
+      ? TH_El_Str("3", 12)
+      ? TH_El_Str("4", 12)
+      ? TH_El_Str("5", 12)
+      ? TH_El_Str("6", 12)
+      ? TH_El_Str("7", 12)
+      ? TH_El_Str("8", 12)
+      ? TH_El_Str("9", 12)
+      ? TH_El_Str("10", 12)
+      ? TH_El_Str("11", 12)
+      ? TH_El_Str("12", 12)
+      ? TH_El_Str("13", 12)
+   ? TR_El_close("", 12)
+   
+   ? General_El_Str("</thead>",9)
+
 RETURN
 *************************************************

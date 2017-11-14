@@ -203,6 +203,7 @@ DO WHILE .T.
 	REPLACE RZIRU   WITH WRZIRU
 	REPLACE RZIRI   WITH WRZIRI
 	REPLACE RSK     WITH WRSK
+   REPLACE PP      WITH wDmpdob
 
 	IF wrsvep <> 0
 		SELECT POREZN
@@ -224,26 +225,26 @@ DO WHILE .T.
 		mdmpdob = wdmpdob
 		SELECT KPR
 		APPEND BLANK
-		REPLACE RBkPr    WITH   WRBkPr
-		REPLACE dkkPr    WITH   WdkkPr
+		REPLACE RBkPr    WITH WRBkPr
+		REPLACE dkkPr    WITH WdkkPr
 		REPLACE dPPVDKPR WITh WdPPVDKPR
 		REPLACE bracKPR  WITH wbracKPR
 		REPLACE dracKPR  with wdracKPR
 		REPLACE kupkpr   WITH mDmpdob
 		REPLACE kupkpr   WITH wDmpdob
-		REPLACE pibkpr   WITH  wpibkpr
+		REPLACE pibkpr   WITH wpibkpr
 		REPLACE ukspdv   WITH wukspdv
 		REPLACE ukspdv1  WITH wukspdv1
-		REPLACE oslpdv   WITH  woslpdv
-		REPLACE uvozn    WITH   wuvozn
-		REPLACE npdv     WITH    wnpdv
-		REPLACE ukppdv   WITH  wukppdv
-		REPLACE odpdv    WITH  wodpdv
+		REPLACE oslpdv   WITH woslpdv
+		REPLACE uvozn    WITH wuvozn
+		REPLACE npdv     WITH wnpdv
+		REPLACE ukppdv   WITH wukppdv
+		REPLACE odpdv    WITH wodpdv
 		REPLACE neodpdv  WITH wneodpdv
 		REPLACE vbezpdvu WITH wvbezpdvu
 		REPLACE iznpdvu  WITH wiznpdvu
-		REPLACE vdu      WITH     wvdu
-		REPLACE IZNN5    WITH    wiznn5
+		REPLACE vdu      WITH wvdu
+		REPLACE IZNN5    WITH wiznn5
 	ENDIF
 
 	SELECT RASHODN

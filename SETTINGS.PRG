@@ -21,6 +21,7 @@
 *        Vidi ARTUNOS1.PRG 
 *        PNUMVAL: ne koristi se
 *        PSTRVAL: ne koristi se
+           
 ********************************************************************************
 LOCAL Izbor, nPredhIzbor
 

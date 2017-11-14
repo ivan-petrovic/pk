@@ -1,44 +1,22 @@
-LOCAL DN, wBr, ind, SumaM, SumaD
-
-PRIVATE Dat, Red
+LOCAL wBr, ind, SumaM, SumaD
 
 SELECT 1
 USE ARTPANE INDEX APINSIF
 
 DO WHILE .T.
 
-	Dat = date()
 	SumaM = val("0000000000.00")
 	SumaD = val("0000000000000000.00")
-	DN = " "
 
-	MainMask("STAMPA LAGER ARTIKALA CIJE JE STANJE KOLICINA NULA")
-	@ 10,10 SAY "STAMPANJE LAGER LISTE ARTIKALA SA STANJEM NULA (D/N)? " ;
-	        GET DN PICTURE "!" VALID(DN $ "DdNn")
-	READ
+	* MainMask("STAMPA LAGER ARTIKALA CIJE JE STANJE KOLICINA NULA")
 
-	IF Lastkey() = 27
-		CLOSE DATABASES
-		RETURN
-	ENDIF
+   SET CONSOLE OFF
+   SET ALTERNATE TO c:\PK\lagnul.html
+   SET ALTERNATE ON
+   header("Stampa lagera sa kolicinom nula","lagnul.css")
+   makeHeader(Alltrim(gcNazRad) + " - Lager sa kolicinom nula")
 
-	IF DN = "N"
-		CLOSE DATABASES
-		RETURN
-	ENDIF
-
-	@ 23,26 SAY ">>  Stampanje je u toku  <<"
-
-	SET DEVICE TO PRINT
-	SET PRINTER TO LPT1
-	SET PRINT ON
-
-	Setprc(0,0)
-	Red = 80
-
-	IF Red > 62
-		Glavicw()
-	ENDIF
+	Glavicw()
 
 	wBr = val("0000")
 	ind = 0
@@ -49,23 +27,28 @@ DO WHILE .T.
 			EXIT
 		ENDIF
 
-		IF Red > 60
-			Glavicw()
-		ENDIF
-
 		IF ARTKOL # 0
 			SKIP
 			LOOP
 		ENDIF
 
 		wBr = wBr + 1
-		@ Red,0  SAY wBr PICTURE "9999"
-		@ Red,5  SAY ARTSIF PICTURE "9999999999999"
-		@ Red,19 SAY substr(ARTNAZ,1,28)
-		@ Red,48 SAY ARTKOL PICTURE "9999"
-		@ Red,52 SAY ARTCEN PICTURE "99999.99"
-		@ Red,61 SAY (ARTCEN * gnBod) PICTURE "999,999,999,999.99"
-		Red = Red + 1
+		
+      ? TR_EL_open("", 12)
+      ? TD_EL_Num(wBr, 0, 12)
+      ? TD_EL_Num(ARTSIF, 0, 12)
+      ? TD_EL_Str(ARTNAZ, 12)
+      ? TD_EL_Num(ARTKOL, 2, 12)
+      ? TD_EL_Num(ARTCEN, 2, 12)
+      ? TD_EL_Num(ARTCEN * gnBod, 2, 12)
+      ? TR_EL_close("", 12)
+
+		* @ Red,0  SAY wBr PICTURE "9999"
+		* @ Red,5  SAY ARTSIF PICTURE "9999999999999"
+		* @ Red,19 SAY substr(ARTNAZ,1,28)
+		* @ Red,48 SAY ARTKOL PICTURE "9999"
+		* @ Red,52 SAY ARTCEN PICTURE "99999.99"
+		* @ Red,61 SAY (ARTCEN * gnBod) PICTURE "999,999,999,999.99"
 
 		SumaM = SumaM + (ARTCEN * ARTKOL)
 		SumaD = SumaD + (ARTCEN * gnBod * ARTKOL)
@@ -74,22 +57,27 @@ DO WHILE .T.
 	ENDDO
 
 	IF ind = 1
-   	@ Red,0 SAY Replicate("-",79)
-   	Red = Red + 1
-   	@ Red,40 SAY SumaM PICTURE "9,999,999,999.99"
-   	@ Red,57 SAY SumaD PICTURE "999,999,999,999,999.99"
+      ? TR_El_open("zbir", 12)
+      ? General_El('<td colspan="4" class="centriraj">UKUPNO</td>',12)
+      ? TD_EL_Num(SumaM, 2, 12)
+      ? TD_EL_Num(SumaD, 2, 12)
+      ? TR_El_close("zbir", 12)
+
+   	* @ Red,40 SAY SumaM PICTURE "9,999,999,999.99"
+   	* @ Red,57 SAY SumaD PICTURE "999,999,999,999,999.99"
    	EXIT
 	ENDIF
 
 ENDDO
 
-Red = Red + 1
-@ Red,0 SAY " "
+? TBL_El_close("lagnul-table", 6)
+? General_El("</div> <!-- lagnul -->",6)
 
-EJECT
-SET DEVICE TO SCREEN
-SET PRINT OFF
-SET PRINT TO
+DO futer
+
+SET ALTERNATE TO
+SET ALTERNATE OFF
+SET CONSOLE ON
 
 USE
 
@@ -98,24 +86,31 @@ RETURN
 ******************************************
 PROCEDURE Glavicw
 
-	Red = 1
-	@ 1,1 SAY gcNazRad
-	@ 1,24 SAY "LAGER SA KOLIC. NULA"
-	@ 1,45 SAY Dat
-	@ 1,56 SAY "BOD"
-	@ 1,60 SAY gnBod PICTURE "9,999,999,999.99"
-	Red = Red + 2
+   ? General_El('<div class="lagnul">',6)
+   ? TBL_El_open("lagnul-zaglavlje", 9)
 
-	@ Red,1 SAY "RB"
-	@ Red,9 SAY "SIFRA"
-	@ Red,26 SAY "NAZIV ARTIKLA"
-	@ Red,48 SAY "KOL"
-	@ Red,53 SAY "BODOVI"
-	@ Red,65 SAY "CENA U DINARIMA"
-	Red = Red + 1
+   ? TR_El_open("", 12)
+   ? TD_El_Str(gcNazRad, 12)
+   ? TD_El_Str("LAGER SA KOLICINOM NULA", 12)
+   ? TD_El_Str(DtoC(Date()), 12)
+   ? TD_El_Str("BOD: " + Str(gnBod,16,2), 12)
+   ? TR_El_close("", 12)
 
-	@ Red,0 SAY Replicate("-",79)
-	Red = Red + 1
+   ? TBL_El_close("lagnul-zaglavlje", 9)
+
+   ? TBL_El_open("lagnul-table", 9)
+   ? General_El("<thead>",9)
+
+   ? TR_El_open("", 12)
+   ? TH_El_Str("RB", 12)
+   ? TH_El_Str("Sifra", 12)
+   ? TH_El_Str("Naziv artikla", 12)
+   ? TH_El_Str("Kolicina", 12)
+   ? TH_El_Str("Bodovi", 12)
+   ? TH_El_Str("Cena u dinarima", 12)
+   ? TR_El_close("", 12)
+
+   ? General_El("</thead>",9)
 
 RETURN
 ******************************************

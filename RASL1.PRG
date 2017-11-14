@@ -165,5 +165,3 @@ DO CASE
         @ 24,79 SAY " "
         return(2)
 END CASE
-
-
